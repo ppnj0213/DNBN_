@@ -78,15 +78,14 @@ public class MemberService {
 	 */
 	@Transactional
 	public void updateMember(Long memberId, MemberUpdateDto memberUpdateDto) {
-		Member member = getMember(memberId);
-		List<MyRegion> myRegions = getMyRegion(memberId);
+		List<Member> result = memberRepository.findByIdWithMyRegion(memberId);
 
 		String rawPassword = memberUpdateDto.getUserPw();
 		String encPassword = bCryptPasswordEncoder.encode(rawPassword);
 		memberUpdateDto.setUserPw(encPassword);
 
 		// 기본정보 update
-		member.editMember(memberUpdateDto);
+		// member.editMember(memberUpdateDto);
 		// 동네정보 update
 		for (MyRegion myRegion : memberUpdateDto.getMyRegions()) {
 			myRegion.editMyRegion(myRegion);
@@ -95,9 +94,5 @@ public class MemberService {
 
 	private Member getMember(Long memberId) {
 		return memberRepository.findById(memberId).orElseThrow(NoSuchElementException::new);
-	}
-
-	private List<MyRegion> getMyRegion(Long memberId) {
-		return myRegionRepository.findByMemberId(memberId);
 	}
 }
