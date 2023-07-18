@@ -1,18 +1,24 @@
 package com.dnbn.back.member.service;
 
+import static org.springframework.util.StringUtils.*;
+
 import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
+import com.dnbn.back.common.exception.ErrorCode;
+import com.dnbn.back.common.exception.MemberException;
 import com.dnbn.back.member.entity.Member;
 import com.dnbn.back.member.entity.MyRegion;
 import com.dnbn.back.member.entity.Role;
 import com.dnbn.back.member.model.MemberCreateDto;
 import com.dnbn.back.member.model.MemberDto;
 import com.dnbn.back.member.model.MemberUpdateDto;
+import com.dnbn.back.member.model.MyRegionDto;
 import com.dnbn.back.member.repository.MemberRepository;
 import com.dnbn.back.member.repository.MyRegionRepository;
 
@@ -32,7 +38,7 @@ public class MemberService {
 	 * memberCreateDto 에서 password를 암호화한 뒤 저장한다.
 	 */
 	@Transactional
-	public void join(MemberCreateDto memberCreateDto) {
+	public Long join(MemberCreateDto memberCreateDto) {
 		String rawPassword = memberCreateDto.getUserPw();
 		String encPassword = bCryptPasswordEncoder.encode(rawPassword);
 
@@ -44,11 +50,13 @@ public class MemberService {
 		Member savedMember = memberRepository.save(member);
 
 		// MyRegion 생성
-		List<MyRegion> myRegions = memberCreateDto.getMyRegions();
-		for (MyRegion myRegion : myRegions) {
+		List<MyRegionDto> myRegionDtos = memberCreateDto.getMyRegions();
+		for (MyRegionDto myRegionDto : myRegionDtos) {
+			MyRegion myRegion = myRegionDto.toEntity();
 			myRegion.setMember(savedMember);
 			myRegionRepository.save(myRegion);
 		}
+		return savedMember.getId();
 	}
 
 	/**
@@ -77,22 +85,29 @@ public class MemberService {
 	 * 회원정보 수정
 	 */
 	@Transactional
-	public void updateMember(Long memberId, MemberUpdateDto memberUpdateDto) {
-		List<Member> result = memberRepository.findByIdWithMyRegion(memberId);
+	public Long updateMember(Long memberId, MemberUpdateDto memberUpdateDto) {
+		Member member = memberRepository.findByIdWithMyRegion(memberId);
+		List<MyRegion> myRegions = member.getMyRegions();
 
-		String rawPassword = memberUpdateDto.getUserPw();
-		String encPassword = bCryptPasswordEncoder.encode(rawPassword);
-		memberUpdateDto.setUserPw(encPassword);
-
-		// 기본정보 update
-		// member.editMember(memberUpdateDto);
-		// 동네정보 update
-		for (MyRegion myRegion : memberUpdateDto.getMyRegions()) {
-			myRegion.editMyRegion(myRegion);
+		// 비밀번호 변경된 경우 암호화
+		if (hasText(memberUpdateDto.getUserPw())) {
+			String rawPassword = memberUpdateDto.getUserPw();
+			String encPassword = bCryptPasswordEncoder.encode(rawPassword);
+			memberUpdateDto.setUserPw(encPassword);
 		}
+		member.editMember(memberUpdateDto); // 기본정보 update
+
+		// 동네 변경된 경우 id로 체크
+		myRegions.forEach(myRegion -> {
+			memberUpdateDto.getMyRegions()
+				.stream()
+				.filter(myRegionDto -> myRegion.getId().equals(myRegionDto.getId()))
+				.forEachOrdered(myRegionDto -> myRegion.editMyRegion(myRegionDto.toEntity())); // 동네정보 update
+		});
+		return member.getId();
 	}
 
 	private Member getMember(Long memberId) {
-		return memberRepository.findById(memberId).orElseThrow(NoSuchElementException::new);
+		return memberRepository.findById(memberId).orElseThrow(() -> new MemberException(ErrorCode.MEMBER_NOT_FOUND));
 	}
 }

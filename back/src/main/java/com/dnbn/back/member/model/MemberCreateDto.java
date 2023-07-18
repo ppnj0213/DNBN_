@@ -24,7 +24,7 @@ public class MemberCreateDto {
 	private String userPw;
 	private String nickname;
 	private Role role;
-	private List<MyRegion> myRegions = new ArrayList<>();
+	private List<MyRegionDto> myRegions = new ArrayList<>();
 
 	public Member toEntity() {
 		return Member.builder()

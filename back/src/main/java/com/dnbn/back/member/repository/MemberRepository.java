@@ -14,6 +14,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 	Optional<Member> findByUserId(String userId);
 	boolean existsByUserId(String userId);
 	boolean existsByNickname(String nickname);
-	@Query("select m from Member m join fetch m.myRegions where m.id = :memberId")
-	List<Member> findByIdWithMyRegion(Long memberId);
+	@Query("select m from Member m join fetch m.myRegions where m.id = :id")
+	Member findByIdWithMyRegion(@Param("id") Long memberId);
 }

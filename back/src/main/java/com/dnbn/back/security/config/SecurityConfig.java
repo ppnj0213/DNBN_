@@ -39,7 +39,7 @@ public class SecurityConfig {
 			.csrf(AbstractHttpConfigurer::disable)
 			.cors(AbstractHttpConfigurer::disable)
 			.authorizeHttpRequests((requests) -> requests
-				.requestMatchers("/api/members/login", "/api/members/signup").permitAll()
+				.requestMatchers("/api/members/login", "/api/members/signup/**").permitAll()
 				.requestMatchers("/user").hasAnyRole("USER", "ADMIN") // 권한 여러개
 				.requestMatchers("/admin").hasRole("ADMIN")
 				.anyRequest().authenticated() // 어떤 요청이라도 인증 필요
