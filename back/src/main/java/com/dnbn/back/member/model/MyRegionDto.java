@@ -28,7 +28,7 @@ public class MyRegionDto {
 	public MyRegion toEntity() {
 		return MyRegion.builder()
 			.id(id)
-			.isMainRegion(isMainRegion)
+			.isMainRegion(isMainRegion.isEmpty() ? "N" : isMainRegion)
 			.sido_code(sido_code)
 			.sido_name(sido_name)
 			.sigoon_code(sigoon_code)

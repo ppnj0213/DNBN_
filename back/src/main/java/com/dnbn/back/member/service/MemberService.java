@@ -47,12 +47,16 @@ public class MemberService {
 
 		// Member 생성
 		Member member = memberCreateDto.toEntity();
+		member.validateRequiredFields(); // 필수값 체크
+		checkUserId(member.getUserId());
+		checkNickname(member.getNickname());
 		Member savedMember = memberRepository.save(member);
 
 		// MyRegion 생성
 		List<MyRegionDto> myRegionDtos = memberCreateDto.getMyRegions();
 		for (MyRegionDto myRegionDto : myRegionDtos) {
 			MyRegion myRegion = myRegionDto.toEntity();
+			myRegion.validateRequiredFields(); //필수값 체크
 			myRegion.setMember(savedMember);
 			myRegionRepository.save(myRegion);
 		}
@@ -63,14 +67,20 @@ public class MemberService {
 	 * 아이디 중복체크
 	 */
 	public boolean checkUserId(String userId) {
-		return memberRepository.existsByUserId(userId);
+		if (memberRepository.existsByUserId(userId)) {
+			throw new MemberException(ErrorCode.ID_DUPLICATED);
+		}
+		return true;
 	}
 
 	/**
 	 * 닉네임 중복체크
 	 */
 	public boolean checkNickname(String nickname) {
-		return memberRepository.existsByNickname(nickname);
+		if (memberRepository.existsByNickname(nickname)) {
+			throw new MemberException(ErrorCode.NICKNAME_DUPLICATED);
+		}
+		return true;
 	}
 
 	/**
@@ -86,7 +96,8 @@ public class MemberService {
 	 */
 	@Transactional
 	public Long updateMember(Long memberId, MemberUpdateDto memberUpdateDto) {
-		Member member = memberRepository.findByIdWithMyRegion(memberId);
+		Member member = memberRepository.findByIdWithMyRegion(memberId)
+			.orElseThrow(() -> new MemberException(ErrorCode.MEMBER_NOT_FOUND));
 		List<MyRegion> myRegions = member.getMyRegions();
 
 		// 비밀번호 변경된 경우 암호화
@@ -108,6 +119,7 @@ public class MemberService {
 	}
 
 	private Member getMember(Long memberId) {
-		return memberRepository.findById(memberId).orElseThrow(() -> new MemberException(ErrorCode.MEMBER_NOT_FOUND));
+		return memberRepository.findById(memberId)
+			.orElseThrow(() -> new MemberException(ErrorCode.MEMBER_NOT_FOUND));
 	}
 }

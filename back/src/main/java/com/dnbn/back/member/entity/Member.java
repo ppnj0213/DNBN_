@@ -9,6 +9,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.util.StringUtils;
 
 import com.dnbn.back.common.entity.BaseTimeEntity;
+import com.dnbn.back.common.exception.ErrorCode;
+import com.dnbn.back.common.exception.MemberException;
 import com.dnbn.back.member.model.MemberUpdateDto;
 
 import jakarta.persistence.CascadeType;
@@ -54,5 +56,19 @@ public class Member extends BaseTimeEntity {
 		if (hasText(memberUpdateDto.getNickname())) {
 			nickname = memberUpdateDto.getNickname();
 		}
+	}
+
+	public void validateRequiredFields() {
+		if (userId == null || userId.isEmpty()) {
+            throw new MemberException(ErrorCode.USER_ID_IS_EMPTY);
+        }
+
+        if (userPw == null || userPw.isEmpty()) {
+            throw new MemberException(ErrorCode.USER_PW_IS_EMPTY);
+        }
+
+        if (nickname == null || nickname.isEmpty()) {
+            throw new MemberException(ErrorCode.NICKNAME_IS_EMPTY);
+        }
 	}
 }

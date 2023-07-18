@@ -18,7 +18,7 @@ public class MemberDetails extends User {
 	private final Long id;
 
 	public MemberDetails(Member member) {
-		super(member.getUserId(), member.getUserPw(), List.of(new SimpleGrantedAuthority("ROLE_ADMIN")));
+		super(member.getUserId(), member.getUserPw(), List.of(new SimpleGrantedAuthority("ROLE_USER")));
 		this.id = member.getId();
 	}
 

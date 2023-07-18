@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class CommonExceptionHandler {
 
-	@ExceptionHandler
+	@ExceptionHandler({MemberException.class})
 	public ResponseEntity<ErrorDto> handleNotFoundException(MemberException e) {
 		return ResponseEntity.ok(new ErrorDto(e.getMessage(), e.getHttpStatus()));
 	}

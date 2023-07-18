@@ -4,6 +4,8 @@ import static org.springframework.util.StringUtils.*;
 
 import org.springframework.util.StringUtils;
 
+import com.dnbn.back.common.exception.ErrorCode;
+import com.dnbn.back.common.exception.MemberException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
@@ -56,6 +58,8 @@ public class MyRegion {
 	public void editMyRegion(MyRegion myRegion) {
 		if (hasText(myRegion.isMainRegion)) {
 			isMainRegion = myRegion.isMainRegion;
+		} else {
+			isMainRegion = "N";
 		}
 		if (hasText(myRegion.sido_code)) {
 			sido_code = myRegion.sido_code;
@@ -75,5 +79,31 @@ public class MyRegion {
 		if (hasText(myRegion.dong_name))  {
 			dong_name = myRegion.dong_name;
 		}
+	}
+
+	public void validateRequiredFields() {
+		if (sido_code == null || sido_code.isEmpty()) {
+            throw new MemberException(ErrorCode.MY_REGION_NOT_ENOUGH);
+        }
+
+        if (sido_name == null || sido_name.isEmpty()) {
+            throw new MemberException(ErrorCode.MY_REGION_NOT_ENOUGH);
+        }
+
+		if (sigoon_code == null || sigoon_code.isEmpty()) {
+            throw new MemberException(ErrorCode.MY_REGION_NOT_ENOUGH);
+        }
+
+        if (sigoon_name == null || sigoon_name.isEmpty()) {
+            throw new MemberException(ErrorCode.MY_REGION_NOT_ENOUGH);
+        }
+
+		if (dong_code == null || dong_code.isEmpty()) {
+            throw new MemberException(ErrorCode.MY_REGION_NOT_ENOUGH);
+        }
+
+        if (dong_name == null || dong_name.isEmpty()) {
+            throw new MemberException(ErrorCode.MY_REGION_NOT_ENOUGH);
+        }
 	}
 }

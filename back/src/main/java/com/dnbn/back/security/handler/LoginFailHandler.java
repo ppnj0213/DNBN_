@@ -1,10 +1,15 @@
 package com.dnbn.back.security.handler;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
+import com.dnbn.back.common.exception.ErrorCode;
+import com.dnbn.back.common.exception.ErrorDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.ServletException;
@@ -21,6 +26,18 @@ public class LoginFailHandler implements AuthenticationFailureHandler {
 
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-		log.error("[인증오류] 아이디 혹은 비밀번호가 올바르지 않습니다.");
+		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+		response.setCharacterEncoding("UTF-8");
+
+		ErrorCode errorCode = ErrorCode.LOGIN_FAILED;
+
+		log.error(errorCode.getMessage());
+
+		ErrorDto errorDto = ErrorDto.builder()
+			.message(errorCode.getMessage())
+			.httpStatus(errorCode.getHttpStatus())
+			.build();
+
+		objectMapper.writeValue(response.getWriter(), errorDto);
 	}
 }
