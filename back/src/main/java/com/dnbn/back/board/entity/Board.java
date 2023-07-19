@@ -40,6 +40,7 @@ public class Board extends BaseTimeEntity {
 	private String sigoon_code;
 	private String dong_code;
 	private String content;
+	private String writer;
 	private String openYn;
 	private int liked;
 

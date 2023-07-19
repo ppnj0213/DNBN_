@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.dnbn.back.member.entity.Member;
 
+@Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
 	Optional<Member> findByUserId(String userId);
 	boolean existsByUserId(String userId);
