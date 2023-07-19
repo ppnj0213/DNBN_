@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class ErrorDto {
+public class ErrorResponse {
 	private String message;
 	private HttpStatus httpStatus;
 }

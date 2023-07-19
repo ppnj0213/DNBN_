@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.util.StringUtils;
 
+import com.dnbn.back.board.entity.Board;
 import com.dnbn.back.common.entity.BaseTimeEntity;
 import com.dnbn.back.common.exception.ErrorCode;
 import com.dnbn.back.common.exception.MemberException;
@@ -43,11 +44,14 @@ public class Member extends BaseTimeEntity {
 	private Long id;
 	private String userId;
 	private String userPw;
+	@Column(unique = true)
 	private String nickname;
 	@Enumerated(EnumType.STRING)
 	private Role role;
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<MyRegion> myRegions = new ArrayList<>();
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Board> boards = new ArrayList<>();
 
 	public void editMember(MemberUpdateDto memberUpdateDto) {
 		if (hasText(memberUpdateDto.getUserPw())) {

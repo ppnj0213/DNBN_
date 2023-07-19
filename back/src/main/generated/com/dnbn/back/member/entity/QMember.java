@@ -22,6 +22,8 @@ public class QMember extends EntityPathBase<Member> {
 
     public final com.dnbn.back.common.entity.QBaseTimeEntity _super = new com.dnbn.back.common.entity.QBaseTimeEntity(this);
 
+    public final ListPath<com.dnbn.back.board.entity.Board, com.dnbn.back.board.entity.QBoard> boards = this.<com.dnbn.back.board.entity.Board, com.dnbn.back.board.entity.QBoard>createList("boards", com.dnbn.back.board.entity.Board.class, com.dnbn.back.board.entity.QBoard.class, PathInits.DIRECT2);
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdDate = _super.createdDate;
 

@@ -37,7 +37,6 @@ public class SecurityConfig {
 			.requestMatchers(toH2Console());
 	}
 
-
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		return http
@@ -58,8 +57,8 @@ public class SecurityConfig {
 				.usernameParameter("userId")
 				.passwordParameter("userPw")
 				.loginPage("/api/members/login") // 로그인 페이지
-				.loginProcessingUrl("/api/members/login") // 실제 post로 값을 받아서 검증하는 주소
-				.defaultSuccessUrl("/") // 로그인 성공 시 이동할 주소
+				// .loginProcessingUrl("/api/members/login") // 실제 post로 값을 받아서 검증하는 주소
+				.defaultSuccessUrl("/api/members/login") // 로그인 성공 시 이동할 주소
 				.failureHandler(new LoginFailHandler(objectMapper))
 			)
 			.rememberMe(rm -> rm

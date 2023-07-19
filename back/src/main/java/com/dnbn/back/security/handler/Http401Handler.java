@@ -7,7 +7,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
 import com.dnbn.back.common.exception.ErrorCode;
-import com.dnbn.back.common.exception.ErrorDto;
+import com.dnbn.back.common.exception.ErrorResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.ServletException;
@@ -31,11 +31,11 @@ public class Http401Handler implements AuthenticationEntryPoint {
 
 		log.error(errorCode.getMessage());
 
-		ErrorDto errorDto = ErrorDto.builder()
+		ErrorResponse errorResponse = ErrorResponse.builder()
 			.message(errorCode.getMessage())
 			.httpStatus(errorCode.getHttpStatus())
 			.build();
 
-		objectMapper.writeValue(response.getWriter(), errorDto);
+		objectMapper.writeValue(response.getWriter(), errorResponse);
 	}
 }

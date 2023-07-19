@@ -1,19 +1,26 @@
 package com.dnbn.back.common.exception;
 
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ProblemDetail;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.ErrorResponse;
-import org.springframework.web.ErrorResponseException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestControllerAdvice
+@Slf4j
 public class CommonExceptionHandler {
 
 	@ExceptionHandler({MemberException.class})
-	public ResponseEntity<ErrorDto> handleNotFoundException(MemberException e) {
-		return ResponseEntity.ok(new ErrorDto(e.getMessage(), e.getHttpStatus()));
+	protected ResponseEntity<ErrorResponse> handleMemberException(MemberException e) {
+		log.error(e.getMessage());
+		return ResponseEntity.ok(new ErrorResponse(e.getMessage(), e.getHttpStatus()));
+	}
+
+	@ExceptionHandler(Exception.class)
+	protected ResponseEntity<ErrorResponse> handleGenericException(Exception e) {
+		log.error(e.getMessage());
+		return ResponseEntity.ok(new ErrorResponse("알 수 없는 오류가 발생했습니다. 관리자에게 문의하세요.", HttpStatus.INTERNAL_SERVER_ERROR));
 	}
 
 }

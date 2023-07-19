@@ -39,17 +39,19 @@ public class MemberService {
 	 */
 	@Transactional
 	public Long join(MemberCreateDto memberCreateDto) {
+		// 비밀번호 암호화
 		String rawPassword = memberCreateDto.getUserPw();
-		String encPassword = bCryptPasswordEncoder.encode(rawPassword);
-
+		String encPassword = !rawPassword.isEmpty() ? bCryptPasswordEncoder.encode(rawPassword) : null; // 공백도 암호화 되는 문제 때문에 validation 체크를 위해 null 처리
 		memberCreateDto.setUserPw(encPassword);
+
+		// 권한 주입
 		memberCreateDto.setRole(Role.ROLE_USER);
 
 		// Member 생성
 		Member member = memberCreateDto.toEntity();
 		member.validateRequiredFields(); // 필수값 체크
 		checkUserId(member.getUserId());
-		checkNickname(member.getNickname());
+		// checkNickname(member.getNickname());
 		Member savedMember = memberRepository.save(member);
 
 		// MyRegion 생성
