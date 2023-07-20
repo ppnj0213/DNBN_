@@ -9,9 +9,9 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 
 import com.dnbn.back.board.entity.Board;
-import com.dnbn.back.board.model.BoardDto;
+import com.dnbn.back.board.model.BoardDetailDto;
 import com.dnbn.back.board.model.BoardSearchCond;
-import com.dnbn.back.board.model.QBoardDto;
+import com.dnbn.back.board.model.QBoardDetailDto;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -31,10 +31,11 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
 	}
 
 	@Override
-	public Slice<BoardDto> getBoardListWithSlice(BoardSearchCond cond, Pageable pageable) {
-		List<BoardDto> result =
-			queryFactory.select(new QBoardDto(
+	public Slice<BoardDetailDto> getBoardListWithSlice(Pageable pageable, BoardSearchCond cond) {
+		List<BoardDetailDto> result =
+			queryFactory.select(new QBoardDetailDto(
 					board.id,
+					board.member.id,
 					board.sido_code,
 					board.sigoon_code,
 					board.dong_code,
@@ -43,12 +44,12 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
 					board.createdDate))
 				.from(board)
 				.where(sidoCodeEq(cond.getSido_code()),
-					sigoonCodeEq(cond.getSigoon_code()),
-					dongCodeEq(cond.getDong_code()),
-					writerEq(cond.getWriter()))
+					   sigoonCodeEq(cond.getSigoon_code()),
+					   dongCodeEq(cond.getDong_code()),
+					   writerEq(cond.getWriter()))
 				.orderBy(board.id.desc()) 	// 등록일자 내림차순
 				.offset(pageable.getOffset())		// 현재까지 로드한 데이터의 개수
-				.limit(pageable.getPageSize() + 1)	// 한번에 로드할 데이터의 개수
+				.limit(pageable.getPageSize() + 1)	//
 				.fetch();
 
  		// 재조회한 데이터(result) 개수가 기존 데이터보다 많다면 true

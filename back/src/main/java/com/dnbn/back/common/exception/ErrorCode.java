@@ -22,8 +22,13 @@ public enum ErrorCode {
 	
 	// 권한
 	NO_ACCESS("ACCESS", "해당 페이지에 대한 권한이 없습니다.", HttpStatus.UNAUTHORIZED),
-	LOGIN_NEEDED("ACCESS", "로그인이 필요합니다.", HttpStatus.UNAUTHORIZED);
+	LOGIN_NEEDED("ACCESS", "로그인이 필요합니다.", HttpStatus.UNAUTHORIZED),
 
+	// 게시판
+	ALREADY_DELETED("BOARD", "이미 삭제된 게시글입니다.", HttpStatus.NOT_FOUND),
+	REGION_CODE_IS_EMPTY("BOARD", "내 동네 코드 파라미터에 빈 값이 존재합니다.", HttpStatus.BAD_REQUEST),
+	CONTENT_IS_EMPTY("BOARD", "내용을 입력하세요.", HttpStatus.BAD_REQUEST),
+	WRITER_IS_EMPTY("BOARD", "작성자 파라미터에 빈 값이 존재합니다.", HttpStatus.BAD_REQUEST);
 
 	private String code;
 	private String message;

@@ -44,7 +44,6 @@ public class Member extends BaseTimeEntity {
 	private Long id;
 	private String userId;
 	private String userPw;
-	@Column(unique = true)
 	private String nickname;
 	@Enumerated(EnumType.STRING)
 	private Role role;

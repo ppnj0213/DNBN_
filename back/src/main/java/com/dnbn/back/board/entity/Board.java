@@ -7,6 +7,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.dnbn.back.comment.entity.Comment;
 import com.dnbn.back.common.entity.BaseTimeEntity;
+import com.dnbn.back.common.exception.BoardException;
+import com.dnbn.back.common.exception.ErrorCode;
+import com.dnbn.back.common.exception.MemberException;
 import com.dnbn.back.member.entity.Member;
 
 import jakarta.persistence.CascadeType;
@@ -50,4 +53,30 @@ public class Board extends BaseTimeEntity {
 
 	@OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Comment> comments = new ArrayList<>();
+
+	public void setMember(Member member) {
+		this.member = member;
+	}
+
+	public void validateRequiredFields() {
+		if (sido_code == null || sido_code.isEmpty()) {
+            throw new BoardException(ErrorCode.REGION_CODE_IS_EMPTY);
+        }
+
+        if (sigoon_code == null || sigoon_code.isEmpty()) {
+            throw new BoardException(ErrorCode.REGION_CODE_IS_EMPTY);
+        }
+
+        if (dong_code == null || dong_code.isEmpty()) {
+            throw new BoardException(ErrorCode.REGION_CODE_IS_EMPTY);
+        }
+
+        if (content == null || content.isEmpty()) {
+            throw new BoardException(ErrorCode.CONTENT_IS_EMPTY);
+        }
+
+        if (writer == null || writer.isEmpty()) {
+            throw new BoardException(ErrorCode.NICKNAME_IS_EMPTY);
+        }
+	}
 }

@@ -3,20 +3,17 @@ package com.dnbn.back.member.service;
 import static org.springframework.util.StringUtils.*;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import com.dnbn.back.common.exception.ErrorCode;
 import com.dnbn.back.common.exception.MemberException;
 import com.dnbn.back.member.entity.Member;
 import com.dnbn.back.member.entity.MyRegion;
-import com.dnbn.back.member.entity.Role;
 import com.dnbn.back.member.model.MemberCreateDto;
-import com.dnbn.back.member.model.MemberDto;
+import com.dnbn.back.member.model.MemberDetailDto;
 import com.dnbn.back.member.model.MemberUpdateDto;
 import com.dnbn.back.member.model.MyRegionDto;
 import com.dnbn.back.member.repository.MemberRepository;
@@ -44,21 +41,16 @@ public class MemberService {
 		String encPassword = !rawPassword.isEmpty() ? bCryptPasswordEncoder.encode(rawPassword) : null; // 공백도 암호화 되는 문제 때문에 validation 체크를 위해 null 처리
 		memberCreateDto.setUserPw(encPassword);
 
-		// 권한 주입
-		memberCreateDto.setRole(Role.ROLE_USER);
-
 		// Member 생성
 		Member member = memberCreateDto.toEntity();
-		member.validateRequiredFields(); // 필수값 체크
-		checkUserId(member.getUserId());
-		// checkNickname(member.getNickname());
+		validateMember(member);
 		Member savedMember = memberRepository.save(member);
 
 		// MyRegion 생성
 		List<MyRegionDto> myRegionDtos = memberCreateDto.getMyRegions();
 		for (MyRegionDto myRegionDto : myRegionDtos) {
 			MyRegion myRegion = myRegionDto.toEntity();
-			myRegion.validateRequiredFields(); //필수값 체크
+			validateMyRegion(myRegion);
 			myRegion.setMember(savedMember);
 			myRegionRepository.save(myRegion);
 		}
@@ -66,9 +58,28 @@ public class MemberService {
 	}
 
 	/**
+	 * 내동네 유효성 검사
+	 */
+	private void validateMyRegion(MyRegion myRegion) {
+		//필수값 체크
+		myRegion.validateRequiredFields();
+	}
+
+	/**
+	 *  멤버 유효성 검사
+	 */
+	private void validateMember(Member member) {
+		// 필수값 체크
+		member.validateRequiredFields();
+		// 아이디, 닉네임 중복체크
+		isUserIdDuplicated(member.getUserId());
+		isNicknameDuplicated(member.getNickname());
+	}
+
+	/**
 	 * 아이디 중복체크
 	 */
-	public boolean checkUserId(String userId) {
+	public boolean isUserIdDuplicated(String userId) {
 		if (memberRepository.existsByUserId(userId)) {
 			throw new MemberException(ErrorCode.ID_DUPLICATED);
 		}
@@ -78,7 +89,7 @@ public class MemberService {
 	/**
 	 * 닉네임 중복체크
 	 */
-	public boolean checkNickname(String nickname) {
+	public boolean isNicknameDuplicated(String nickname) {
 		if (memberRepository.existsByNickname(nickname)) {
 			throw new MemberException(ErrorCode.NICKNAME_DUPLICATED);
 		}
@@ -88,9 +99,9 @@ public class MemberService {
 	/**
 	 * 회원정보 조회
 	 */
-	public MemberDto getMemberDetail(Long memberId) {
+	public MemberDetailDto getMemberDetail(Long memberId) {
 		Member member = getMember(memberId);
-		return MemberDto.toMemberDto(member);
+		return MemberDetailDto.toMemberDto(member);
 	}
 
 	/**
@@ -120,7 +131,10 @@ public class MemberService {
 		return member.getId();
 	}
 
-	private Member getMember(Long memberId) {
+	/**
+	 * 영속화 용 멤버 조회 메서드
+	 */
+	public Member getMember(Long memberId) {
 		return memberRepository.findById(memberId)
 			.orElseThrow(() -> new MemberException(ErrorCode.MEMBER_NOT_FOUND));
 	}

@@ -1,7 +1,5 @@
 package com.dnbn.back.board.repository;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +15,7 @@ import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.dnbn.back.board.entity.Board;
-import com.dnbn.back.board.model.BoardDto;
+import com.dnbn.back.board.model.BoardDetailDto;
 import com.dnbn.back.board.model.BoardSearchCond;
 
 import jakarta.persistence.EntityManager;
@@ -50,20 +48,20 @@ class BoardRepositoryTest {
 		BoardSearchCond cond = new BoardSearchCond("10", "1010", "101010", "junyeobk");
 
 		PageRequest firstRequest = PageRequest.of(0, 5);
-		Slice<BoardDto> firstResult = boardRepository.getBoardListWithSlice(cond, firstRequest);
-		for (BoardDto boardDto : firstResult) {
-			System.out.println("content = " + boardDto.getContent());
+		Slice<BoardDetailDto> firstResult = boardRepository.getBoardListWithSlice(firstRequest, cond);
+		for (BoardDetailDto boardDetailDto : firstResult) {
+			System.out.println("content = " + boardDetailDto.getContent());
 		}
 
 		//when
 		PageRequest nextRequest = PageRequest.of(firstResult.nextPageable().getPageNumber(), 5);
-		Slice<BoardDto> nextResult = boardRepository.getBoardListWithSlice(cond, nextRequest);
+		Slice<BoardDetailDto> nextResult = boardRepository.getBoardListWithSlice(nextRequest, cond);
 		boolean hasNext = firstResult.hasNext();
 		while (hasNext) {
 			nextRequest = PageRequest.of(nextResult.nextPageable().getPageNumber(), 5);
-			nextResult = boardRepository.getBoardListWithSlice(cond, nextRequest);
-			for (BoardDto boardDto : nextResult) {
-				System.out.println("content = " + boardDto.getContent());
+			nextResult = boardRepository.getBoardListWithSlice(nextRequest, cond);
+			for (BoardDetailDto boardDetailDto : nextResult) {
+				System.out.println("content = " + boardDetailDto.getContent());
 			}
 			hasNext = nextResult.hasNext();
 		}

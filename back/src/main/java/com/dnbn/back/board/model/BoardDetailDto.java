@@ -7,8 +7,9 @@ import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;
 
 @Getter
-public class BoardDto {
+public class BoardDetailDto {
 	private Long id;
+	private Long memberId;
 	private String sido_code;
 	private String sigoon_code;
 	private String dong_code;
@@ -17,9 +18,10 @@ public class BoardDto {
 	private LocalDateTime createdDate;
 
 	@QueryProjection
-	public BoardDto(Long id, String sido_code, String sigoon_code, String dong_code, String content, String writer,
+	public BoardDetailDto(Long id, Long memberId, String sido_code, String sigoon_code, String dong_code, String content, String writer,
 		LocalDateTime createdDate) {
 		this.id = id;
+		this.memberId = memberId;
 		this.sido_code = sido_code;
 		this.sigoon_code = sigoon_code;
 		this.dong_code = dong_code;
@@ -27,4 +29,5 @@ public class BoardDto {
 		this.writer = writer;
 		this.createdDate = createdDate;
 	}
+
 }

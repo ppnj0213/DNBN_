@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dnbn.back.member.model.MemberCreateDto;
-import com.dnbn.back.member.model.MemberDto;
+import com.dnbn.back.member.model.MemberDetailDto;
 import com.dnbn.back.member.model.MemberUpdateDto;
 import com.dnbn.back.member.service.MemberService;
 
@@ -43,16 +43,16 @@ public class MemberController {
 
 	@GetMapping("/signup/checkId/{userId}")
 	public ResponseEntity<Boolean> checkUserIdDuplicate(@PathVariable String userId) {
-		return ResponseEntity.ok(memberService.checkUserId(userId));
+		return ResponseEntity.ok(memberService.isUserIdDuplicated(userId));
 	}
 
 	@GetMapping("/signup/checkNickname/{nickname}")
 	public ResponseEntity<Boolean> checkNicknameDuplicate(@PathVariable String nickname) {
-		return ResponseEntity.ok(memberService.checkNickname(nickname));
+		return ResponseEntity.ok(memberService.isNicknameDuplicated(nickname));
 	}
 
 	@GetMapping("/mypage/{memberId}")
-	public ResponseEntity<MemberDto> getMemberDetail(@PathVariable Long memberId) {
+	public ResponseEntity<MemberDetailDto> getMemberDetail(@PathVariable Long memberId) {
 		return ResponseEntity.ok(memberService.getMemberDetail(memberId));
 	}
 
