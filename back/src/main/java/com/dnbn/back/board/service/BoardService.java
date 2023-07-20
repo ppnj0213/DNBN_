@@ -9,6 +9,7 @@ import com.dnbn.back.board.entity.Board;
 import com.dnbn.back.board.model.BoardCreateDto;
 import com.dnbn.back.board.model.BoardDetailDto;
 import com.dnbn.back.board.model.BoardSearchCond;
+import com.dnbn.back.board.model.BoardUpdateDto;
 import com.dnbn.back.board.repository.BoardRepository;
 import com.dnbn.back.common.exception.BoardException;
 import com.dnbn.back.common.exception.ErrorCode;
@@ -51,16 +52,29 @@ public class BoardService {
 		board.validateRequiredFields();
 	}
 
+	@Transactional
+	public Long updateBoard(BoardUpdateDto boardUpdateDto) {
+		return null;
+	}
+
 	/**
 	 * 게시글 삭제
 	 */
 	@Transactional
 	public void deleteBoard(Long boardId) {
-		// if (boardRepository.existsByBoardId(boardId)) {
-		// 	boardRepository.deleteById(boardId);
-		// } else {
-		// 	throw new BoardException(ErrorCode.ALREADY_DELETED);
-		// }
+		if (boardRepository.existsById(boardId)) {
+			boardRepository.deleteById(boardId);
+		} else {
+			throw new BoardException(ErrorCode.ALREADY_DELETED);
+		}
 		boardRepository.deleteById(boardId);
+	}
+
+	/**
+	 * 영속화 용 조회 메서드
+	 */
+	public Board getBoard(Long boardId) {
+		return boardRepository.findById(boardId)
+			.orElseThrow(()->new BoardException(ErrorCode.BOARD_NOT_FOUND));
 	}
 }

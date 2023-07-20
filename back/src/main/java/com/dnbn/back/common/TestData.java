@@ -25,7 +25,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 
-@Profile("local")
+@Profile({"local","test"})
 @RequiredArgsConstructor
 @Component
 public class TestData {
