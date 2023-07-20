@@ -19,5 +19,5 @@ import lombok.NoArgsConstructor;
 public class MemberUpdateDto {
 	private String userPw;
 	private String nickname;
-	private List<MyRegion> myRegions = new ArrayList<>();
+	private List<MyRegionDto> myRegions = new ArrayList<>();
 }

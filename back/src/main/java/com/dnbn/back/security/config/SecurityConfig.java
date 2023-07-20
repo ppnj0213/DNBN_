@@ -20,9 +20,14 @@ import com.dnbn.back.security.handler.Http403Handler;
 import com.dnbn.back.security.handler.LoginFailHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.RequiredArgsConstructor;
+
 @EnableWebSecurity
 @Configuration
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+	private final ObjectMapper objectMapper;
 
 	@Bean
 	public WebSecurityCustomizer webSecurityCustomizer() {
@@ -32,16 +37,15 @@ public class SecurityConfig {
 			.requestMatchers(toH2Console());
 	}
 
-
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		return http
 			.csrf(AbstractHttpConfigurer::disable)
 			.cors(AbstractHttpConfigurer::disable)
 			.authorizeHttpRequests((requests) -> requests
-				.requestMatchers("/api/members/login", "/api/members/signup").permitAll()
-				.requestMatchers("/user").hasAnyRole("USER", "ADMIN") // 권한 여러개
-				.requestMatchers("/admin").hasRole("ADMIN")
+				.requestMatchers("/api/members/login", "/api/members/signup/**").permitAll()
+				.requestMatchers("/user/**").hasAnyRole("USER", "ADMIN") // 권한 여러개
+				.requestMatchers("/admin/**").hasRole("ADMIN")
 				.anyRequest().authenticated() // 어떤 요청이라도 인증 필요
 			)
 			.logout(Customizer.withDefaults() // "/logout" 으로 인증 해제
@@ -53,9 +57,9 @@ public class SecurityConfig {
 				.usernameParameter("userId")
 				.passwordParameter("userPw")
 				.loginPage("/api/members/login") // 로그인 페이지
-				.loginProcessingUrl("/api/members/login") // 실제 post로 값을 받아서 검증하는 주소
-				.defaultSuccessUrl("/") // 로그인 성공 시 이동할 주소
-				.failureHandler(new LoginFailHandler(new ObjectMapper()))
+				// .loginProcessingUrl("/api/members/login") // 실제 post로 값을 받아서 검증하는 주소
+				.defaultSuccessUrl("/api/members/login") // 로그인 성공 시 이동할 주소
+				.failureHandler(new LoginFailHandler(objectMapper))
 			)
 			.rememberMe(rm -> rm
 				.alwaysRemember(false)
@@ -64,8 +68,8 @@ public class SecurityConfig {
 				.userDetailsService(userDetailsService())
 			)
 			.exceptionHandling(e -> {
-				e.accessDeniedHandler(new Http403Handler());
-				e.authenticationEntryPoint(new Http401Handler());
+				e.accessDeniedHandler(new Http403Handler(objectMapper));
+				e.authenticationEntryPoint(new Http401Handler(objectMapper));
 			})
 			.userDetailsService(userDetailsService())
 			.build();
