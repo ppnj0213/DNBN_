@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.dnbn.back.board.model.BoardCreateDto;
 import com.dnbn.back.board.model.BoardDetailDto;
 import com.dnbn.back.board.model.BoardSearchCond;
+import com.dnbn.back.board.model.BoardUpdateDto;
 import com.dnbn.back.board.service.BoardService;
 
 import lombok.RequiredArgsConstructor;
@@ -35,5 +37,11 @@ public class BoardController {
 	public ResponseEntity<String> createBoard(@RequestBody BoardCreateDto boardCreateDto) {
 		boardService.createBoard(boardCreateDto);
 		return ResponseEntity.ok("게시글 등록 success");
+	}
+
+	@PutMapping("/save/{boardId}")
+	public ResponseEntity<String> updateBoard(@PathVariable Long boardId, @RequestBody BoardUpdateDto boardUpdateDto) {
+		boardService.updateBoard(boardId, boardUpdateDto);
+		return ResponseEntity.ok("게시글 수정 success");
 	}
 }

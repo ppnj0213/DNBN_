@@ -32,7 +32,6 @@ public class MemberService {
 
 	/**
 	 * 회원가입
-	 * memberCreateDto 에서 password를 암호화한 뒤 저장한다.
 	 */
 	@Transactional
 	public Long join(MemberCreateDto memberCreateDto) {
@@ -55,6 +54,41 @@ public class MemberService {
 			myRegionRepository.save(myRegion);
 		}
 		return savedMember.getId();
+	}
+
+	/**
+	 * 회원정보 조회 (마이페이지)
+	 */
+	public MemberDetailDto getMemberDetail(Long memberId) {
+		Member member = getMember(memberId);
+		return MemberDetailDto.toMemberDto(member);
+	}
+
+	/**
+	 * 회원정보 수정 (마이페이지)
+	 */
+	@Transactional
+	public Long updateMember(Long memberId, MemberUpdateDto memberUpdateDto) {
+		Member member = memberRepository.findByIdWithMyRegion(memberId)
+			.orElseThrow(() -> new MemberException(ErrorCode.MEMBER_NOT_FOUND));
+		List<MyRegion> myRegions = member.getMyRegions();
+
+		// 비밀번호 변경된 경우 암호화
+		if (hasText(memberUpdateDto.getUserPw())) {
+			String rawPassword = memberUpdateDto.getUserPw();
+			String encPassword = bCryptPasswordEncoder.encode(rawPassword);
+			memberUpdateDto.setUserPw(encPassword);
+		}
+		member.editMember(memberUpdateDto); // 기본정보 update
+
+		// 동네 변경된 경우 id로 체크
+		myRegions.forEach(myRegion -> {
+			memberUpdateDto.getMyRegions()
+				.stream()
+				.filter(myRegionDto -> myRegion.getId().equals(myRegionDto.getId()))
+				.forEachOrdered(myRegionDto -> myRegion.editMyRegion(myRegionDto.toEntity())); // 동네정보 update
+		});
+		return member.getId();
 	}
 
 	/**
@@ -94,41 +128,6 @@ public class MemberService {
 			throw new MemberException(ErrorCode.NICKNAME_DUPLICATED);
 		}
 		return true;
-	}
-
-	/**
-	 * 회원정보 조회
-	 */
-	public MemberDetailDto getMemberDetail(Long memberId) {
-		Member member = getMember(memberId);
-		return MemberDetailDto.toMemberDto(member);
-	}
-
-	/**
-	 * 회원정보 수정
-	 */
-	@Transactional
-	public Long updateMember(Long memberId, MemberUpdateDto memberUpdateDto) {
-		Member member = memberRepository.findByIdWithMyRegion(memberId)
-			.orElseThrow(() -> new MemberException(ErrorCode.MEMBER_NOT_FOUND));
-		List<MyRegion> myRegions = member.getMyRegions();
-
-		// 비밀번호 변경된 경우 암호화
-		if (hasText(memberUpdateDto.getUserPw())) {
-			String rawPassword = memberUpdateDto.getUserPw();
-			String encPassword = bCryptPasswordEncoder.encode(rawPassword);
-			memberUpdateDto.setUserPw(encPassword);
-		}
-		member.editMember(memberUpdateDto); // 기본정보 update
-
-		// 동네 변경된 경우 id로 체크
-		myRegions.forEach(myRegion -> {
-			memberUpdateDto.getMyRegions()
-				.stream()
-				.filter(myRegionDto -> myRegion.getId().equals(myRegionDto.getId()))
-				.forEachOrdered(myRegionDto -> myRegion.editMyRegion(myRegionDto.toEntity())); // 동네정보 update
-		});
-		return member.getId();
 	}
 
 	/**
