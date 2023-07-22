@@ -9,6 +9,7 @@ import com.dnbn.back.board.entity.Board;
 import com.dnbn.back.board.model.BoardCreateDto;
 import com.dnbn.back.board.model.BoardDetailDto;
 import com.dnbn.back.board.model.BoardSearchCond;
+import com.dnbn.back.board.model.BoardUpdateDto;
 import com.dnbn.back.board.repository.BoardRepository;
 import com.dnbn.back.common.exception.BoardException;
 import com.dnbn.back.common.exception.ErrorCode;
@@ -37,18 +38,30 @@ public class BoardService {
 	 */
 	@Transactional
 	public Long createBoard(BoardCreateDto boardCreateDto) {
-		Member member = memberService.getMember(boardCreateDto.getMemberId() == null ? 0 : boardCreateDto.getMemberId());
 		Board board = boardCreateDto.toEntity();
+		Member member = memberService.getMember(boardCreateDto.getMemberId() == null ? 0 : boardCreateDto.getMemberId());
 		board.setMember(member);
-		validateMember(board);
+		// validation
+		validateBoard(board);
 		return boardRepository.save(board).getId();
 	}
 
 	/**
-	 * 게시글 유효성 검사
+	 * 게시글 수정
 	 */
-	private void validateMember(Board board) {
-		board.validateRequiredFields();
+	@Transactional
+	public Long updateBoard(Long boardId, BoardUpdateDto boardUpdateDto) {
+		Long memberId = boardUpdateDto.getMemberId();
+
+		Board board = getBoard(boardId);
+		// validation
+		if (!board.matchMember(memberId)) {
+			throw new BoardException(ErrorCode.MEMBER_NO_MATCH);
+		}
+		validateBoard(board);
+		board.editBoard(boardUpdateDto);
+
+		return board.getId();
 	}
 
 	/**
@@ -56,11 +69,29 @@ public class BoardService {
 	 */
 	@Transactional
 	public void deleteBoard(Long boardId) {
-		// if (boardRepository.existsByBoardId(boardId)) {
-		// 	boardRepository.deleteById(boardId);
-		// } else {
-		// 	throw new BoardException(ErrorCode.ALREADY_DELETED);
-		// }
-		boardRepository.deleteById(boardId);
+		if (boardRepository.existsById(boardId)) {
+			boardRepository.deleteById(boardId);
+		} else {
+			throw new BoardException(ErrorCode.ALREADY_DELETED);
+		}
+	}
+
+	public int like(Long boardId, String userId, boolean isLiked) {
+		return 0;
+	}
+
+	/**
+	 * 게시글 유효성 검사
+	 */
+	private void validateBoard(Board board) {
+		board.validateRequiredFields();
+	}
+
+	/**
+	 * 영속화 용 조회 메서드
+	 */
+	public Board getBoard(Long boardId) {
+		return boardRepository.findById(boardId)
+			.orElseThrow(()->new BoardException(ErrorCode.BOARD_NOT_FOUND));
 	}
 }

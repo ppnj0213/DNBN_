@@ -1,5 +1,8 @@
 package com.dnbn.back.board.model;
 
+import org.antlr.v4.runtime.misc.NotNull;
+import org.hibernate.annotations.NotFound;
+
 import com.dnbn.back.board.entity.Board;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -14,6 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class BoardCreateDto {
+
 	private Long memberId;
 	private String sido_code;
 	private String sigoon_code;

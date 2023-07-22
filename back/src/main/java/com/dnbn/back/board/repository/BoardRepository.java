@@ -7,5 +7,5 @@ import com.dnbn.back.board.entity.Board;
 
 @Repository
 public interface BoardRepository extends JpaRepository<Board, Long>, BoardRepositoryCustom {
-	// boolean existsByBoardId(Long boardId);
+	boolean existsById(Long boardId);
 }

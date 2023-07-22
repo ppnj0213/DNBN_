@@ -23,7 +23,6 @@ import jakarta.persistence.PersistenceContext;
 
 @SpringBootTest
 @Transactional
-@Commit
 class BoardRepositoryTest {
 
 	@PersistenceContext
@@ -65,12 +64,11 @@ class BoardRepositoryTest {
 			}
 			hasNext = nextResult.hasNext();
 		}
-
 		//then
 	}
 
 	@BeforeEach
-	public void getBoards() {
+	public void createBoards() {
 		List<Board> boards = new ArrayList<>();
 		for (int i = 1; i <= 30; i++) {
 			Board board = Board.builder()

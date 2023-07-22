@@ -11,9 +11,9 @@ public enum ErrorCode {
 	// 회원가입
 	ID_DUPLICATED("MEMBER", "중복되는 아이디가 존재합니다.", HttpStatus.UNPROCESSABLE_ENTITY),
 	NICKNAME_DUPLICATED("MEMBER", "중복되는 닉네임이 존재합니다.", HttpStatus.UNPROCESSABLE_ENTITY),
-	USER_ID_IS_EMPTY("MEMBER", "userId 입력은 필수입니다.", HttpStatus.BAD_REQUEST),
-	USER_PW_IS_EMPTY("MEMBER", "userPw 입력은 필수입니다.", HttpStatus.BAD_REQUEST),
-	NICKNAME_IS_EMPTY("MEMBER", "nickname 입력은 필수입니다.", HttpStatus.BAD_REQUEST),
+	USER_ID_EMPTY("MEMBER", "userId 입력은 필수입니다.", HttpStatus.BAD_REQUEST),
+	USER_PW_EMPTY("MEMBER", "userPw 입력은 필수입니다.", HttpStatus.BAD_REQUEST),
+	NICKNAME_EMPTY("MEMBER", "nickname 입력은 필수입니다.", HttpStatus.BAD_REQUEST),
 	MY_REGION_NOT_ENOUGH("MY_REGION", "내 동네에 입력되지 않은 값이 있습니다.", HttpStatus.BAD_REQUEST),
 	
 	// 로그인
@@ -25,10 +25,12 @@ public enum ErrorCode {
 	LOGIN_NEEDED("ACCESS", "로그인이 필요합니다.", HttpStatus.UNAUTHORIZED),
 
 	// 게시판
+	BOARD_NOT_FOUND("BOARD", "게시글이 존재하지 않습니다.", HttpStatus.NOT_FOUND),
 	ALREADY_DELETED("BOARD", "이미 삭제된 게시글입니다.", HttpStatus.NOT_FOUND),
-	REGION_CODE_IS_EMPTY("BOARD", "내 동네 코드 파라미터에 빈 값이 존재합니다.", HttpStatus.BAD_REQUEST),
-	CONTENT_IS_EMPTY("BOARD", "내용을 입력하세요.", HttpStatus.BAD_REQUEST),
-	WRITER_IS_EMPTY("BOARD", "작성자 파라미터에 빈 값이 존재합니다.", HttpStatus.BAD_REQUEST);
+	REGION_CODE_EMPTY("BOARD", "내 동네 코드 파라미터에 빈 값이 존재합니다.", HttpStatus.BAD_REQUEST),
+	CONTENT_EMPTY("BOARD", "내용을 입력하세요.", HttpStatus.BAD_REQUEST),
+	MEMBER_NO_MATCH("BOARD", "해당 사용자는 수정/삭제 불가능합니다.", HttpStatus.UNAUTHORIZED),
+	WRITER_EMPTY("BOARD", "작성자 파라미터에 빈 값이 존재합니다.", HttpStatus.BAD_REQUEST);
 
 	private String code;
 	private String message;

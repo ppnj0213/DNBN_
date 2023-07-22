@@ -63,15 +63,15 @@ public class Member extends BaseTimeEntity {
 
 	public void validateRequiredFields() {
 		if (userId == null || userId.isEmpty()) {
-            throw new MemberException(ErrorCode.USER_ID_IS_EMPTY);
+            throw new MemberException(ErrorCode.USER_ID_EMPTY);
         }
 
         if (userPw == null || userPw.isEmpty()) {
-            throw new MemberException(ErrorCode.USER_PW_IS_EMPTY);
+            throw new MemberException(ErrorCode.USER_PW_EMPTY);
         }
 
         if (nickname == null || nickname.isEmpty()) {
-            throw new MemberException(ErrorCode.NICKNAME_IS_EMPTY);
+            throw new MemberException(ErrorCode.NICKNAME_EMPTY);
         }
 	}
 }
