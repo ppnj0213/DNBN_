@@ -38,15 +38,28 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
+    '@nuxtjs/proxy'
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
     baseURL: '/',
+    proxy: true
+  },
+
+  proxy: {
+    '/api': {
+        target: 'http://localhost:8098/',
+        changeOrigin: true // cross origin 허용 
+    }
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
-  }
+  },
+
+  server: {
+    port: 8098, // 바꿀 포트번호 입력
+  },
 }

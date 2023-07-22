@@ -1,9 +1,10 @@
 <template>
-  <Tutorial/>
+  <button class="login" @click="$router.push('/login')">Login</button>
 </template>
 
 <script>
 export default {
-  name: 'IndexPage'
 }
 </script>
+
+<style scoped></style>
