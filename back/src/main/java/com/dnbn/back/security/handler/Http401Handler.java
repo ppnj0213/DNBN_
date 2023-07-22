@@ -34,6 +34,7 @@ public class Http401Handler implements AuthenticationEntryPoint {
 		ErrorResponse errorResponse = ErrorResponse.builder()
 			.message(errorCode.getMessage())
 			.httpStatus(errorCode.getHttpStatus())
+			.errorCode(errorCode)
 			.build();
 
 		objectMapper.writeValue(response.getWriter(), errorResponse);

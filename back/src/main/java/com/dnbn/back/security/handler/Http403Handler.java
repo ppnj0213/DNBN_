@@ -34,6 +34,7 @@ public class Http403Handler implements AccessDeniedHandler {
 		ErrorResponse errorResponse = ErrorResponse.builder()
 			.message(errorCode.getMessage())
 			.httpStatus(errorCode.getHttpStatus())
+			.errorCode(errorCode)
 			.build();
 
 		objectMapper.writeValue(response.getWriter(), errorResponse);

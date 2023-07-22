@@ -30,7 +30,9 @@ public enum ErrorCode {
 	REGION_CODE_EMPTY("BOARD", "내 동네 코드 파라미터에 빈 값이 존재합니다.", HttpStatus.BAD_REQUEST),
 	CONTENT_EMPTY("BOARD", "내용을 입력하세요.", HttpStatus.BAD_REQUEST),
 	MEMBER_NO_MATCH("BOARD", "해당 사용자는 수정/삭제 불가능합니다.", HttpStatus.UNAUTHORIZED),
-	WRITER_EMPTY("BOARD", "작성자 파라미터에 빈 값이 존재합니다.", HttpStatus.BAD_REQUEST);
+	WRITER_EMPTY("BOARD", "작성자 파라미터에 빈 값이 존재합니다.", HttpStatus.BAD_REQUEST),
+
+	INTERNAL_SERVER_ERROR("500", "알 수 없는 오류가 발생했습니다. 관리자에게 문의하세요.", HttpStatus.INTERNAL_SERVER_ERROR);
 
 	private String code;
 	private String message;
