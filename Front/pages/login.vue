@@ -4,6 +4,7 @@
             <input type="text" class="inputId" name="userId" id="id" v-model="userId" autocomplete="off">
             <input type="password" class="inputPw" name="password" id="password" v-model="userPassword">
             <button class="loginBtn" @click="loginCheck">로그인</button>
+            <button class="loginBtn" @click="loginCheck">로그인</button>
             <a>아직 회원이 아니신가요 ? <span @click="moveSignUp">회원가입</span></a>
         </div>
     </div>
