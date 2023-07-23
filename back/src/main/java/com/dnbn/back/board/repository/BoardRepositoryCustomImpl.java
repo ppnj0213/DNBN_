@@ -1,6 +1,8 @@
 package com.dnbn.back.board.repository;
 
 import static com.dnbn.back.board.entity.QBoard.*;
+import static com.dnbn.back.board.entity.QLike.*;
+import static com.querydsl.jpa.JPAExpressions.*;
 
 import java.util.List;
 
@@ -41,18 +43,21 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
 					board.dong_code,
 					board.content,
 					board.writer,
-					board.createdDate))
+					board.createdDate,
+					select(like.id.count())
+						.from(like)
+						.where(like.board.id.eq(board.id))
+				))
 				.from(board)
 				.where(sidoCodeEq(cond.getSido_code()),
 					   sigoonCodeEq(cond.getSigoon_code()),
 					   dongCodeEq(cond.getDong_code()),
 					   writerEq(cond.getWriter()))
-				.orderBy(board.id.desc()) 	// 등록일자 내림차순
-				.offset(pageable.getOffset())		// 현재까지 로드한 데이터의 개수
-				.limit(pageable.getPageSize() + 1)	//
+				.orderBy(board.id.desc())
+				.offset(pageable.getOffset())
+				.limit(pageable.getPageSize() + 1)
 				.fetch();
 
- 		// 재조회한 데이터(result) 개수가 기존 데이터보다 많다면 true
 		boolean hasNext = result.size() > pageable.getPageSize();
 		if (hasNext) {
 			result.remove(result.size() -1);

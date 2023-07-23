@@ -6,11 +6,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.dnbn.back.board.entity.Board;
+import com.dnbn.back.board.entity.Like;
 import com.dnbn.back.board.model.BoardCreateDto;
 import com.dnbn.back.board.model.BoardDetailDto;
 import com.dnbn.back.board.model.BoardSearchCond;
 import com.dnbn.back.board.model.BoardUpdateDto;
+import com.dnbn.back.board.model.LikeDto;
 import com.dnbn.back.board.repository.BoardRepository;
+import com.dnbn.back.board.repository.LikeRepository;
 import com.dnbn.back.common.exception.BoardException;
 import com.dnbn.back.common.exception.ErrorCode;
 import com.dnbn.back.member.entity.Member;
@@ -25,6 +28,7 @@ public class BoardService {
 
 	private final BoardRepository boardRepository;
 	private final MemberService memberService;
+	private final LikeRepository likeRepository;
 
 	/**
 	 * infinite scroll 게시판 조회
@@ -76,8 +80,30 @@ public class BoardService {
 		}
 	}
 
-	public int like(Long boardId, String userId, boolean isLiked) {
-		return 0;
+	/**
+	 * 좋아요/취소
+	 */
+	@Transactional
+	public LikeDto likeOrDislike(Long boardId, Long memberId) {
+		// boardId와 memberId로 좋아요 테이블 탐색
+		Like findLike = likeRepository.findByBoardIdAndMemberId(boardId, memberId).orElse(null);
+		LikeDto likeDto = new LikeDto();
+		// 좋아요 취소
+		if (findLike != null) {
+			likeRepository.deleteById(findLike.getId()); // 기존 매핑정보 삭제
+			likeDto.setLiked(false);
+		// 좋아요
+		} else {
+			Like newLike = Like.builder()
+				.board(getBoard(boardId))
+				.member(memberService.getMember(memberId))
+				.build();
+			likeRepository.save(newLike); // 신규 매핑정보 생성
+			likeDto.setLiked(true);
+		}
+		// 전체 좋아요 개수
+		likeDto.setTotalCount(likeRepository.getCountByBoardId(boardId));
+		return likeDto;
 	}
 
 	/**

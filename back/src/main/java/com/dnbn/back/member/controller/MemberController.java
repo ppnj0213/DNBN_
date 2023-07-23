@@ -41,22 +41,22 @@ public class MemberController {
 		return ResponseEntity.ok("회원가입 success");
 	}
 
-	@GetMapping("/signup/checkId/{userId}")
+	@GetMapping("/signup/{userId}/checkId")
 	public ResponseEntity<Boolean> checkUserIdDuplicate(@PathVariable String userId) {
 		return ResponseEntity.ok(memberService.isUserIdDuplicated(userId));
 	}
 
-	@GetMapping("/signup/checkNickname/{nickname}")
+	@GetMapping("/signup/{nickname}/checkNickname")
 	public ResponseEntity<Boolean> checkNicknameDuplicate(@PathVariable String nickname) {
 		return ResponseEntity.ok(memberService.isNicknameDuplicated(nickname));
 	}
 
-	@GetMapping("/mypage/{memberId}")
+	@GetMapping("/{memberId}/mypage")
 	public ResponseEntity<MemberDetailDto> getMemberDetail(@PathVariable Long memberId) {
 		return ResponseEntity.ok(memberService.getMemberDetail(memberId));
 	}
 
-	@PutMapping("/mypage/{memberId}")
+	@PutMapping("/{memberId}/mypage")
 	public ResponseEntity<String> updateMember(@PathVariable Long memberId, @RequestBody MemberUpdateDto memberUpdateDto) {
 		memberService.updateMember(memberId, memberUpdateDto);
 		return ResponseEntity.ok("회원정보 수정 success");

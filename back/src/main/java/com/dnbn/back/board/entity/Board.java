@@ -47,7 +47,6 @@ public class Board extends BaseTimeEntity {
 	private String content;
 	private String writer;
 	private String openYn;
-	private int liked;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id")
