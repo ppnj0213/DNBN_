@@ -13,6 +13,8 @@ import com.dnbn.back.board.entity.Board;
 import com.dnbn.back.board.model.BoardCreateDto;
 import com.dnbn.back.board.repository.BoardRepository;
 import com.dnbn.back.board.service.BoardService;
+import com.dnbn.back.comment.model.CommentCreateDto;
+import com.dnbn.back.comment.service.CommentService;
 import com.dnbn.back.member.entity.Member;
 import com.dnbn.back.member.entity.Role;
 import com.dnbn.back.member.model.MemberCreateDto;
@@ -32,11 +34,13 @@ public class TestData {
 
 	private final InitMemberService initMemberService;
 	private final InitBoardService initBoardService;
+	private final InitCommentService initCommentService;
 
 	@PostConstruct
 	public void init() {
 		initMemberService.init();
 		initBoardService.init();
+		initCommentService.init();
 	}
 
 	@Description("회원 테스트 데이터 생성")
@@ -106,5 +110,28 @@ public class TestData {
 				boardService.createBoard(boardCreateDto);
 			}
 		}
+	}
+
+	@Description("게시물 테스트 데이터 생성")
+	@Component
+	static class InitCommentService {
+		@Autowired
+		CommentService commentService;
+		@Autowired
+		BoardRepository boardRepository;
+
+		@Transactional
+		public void init() {
+			List<Board> boards = boardRepository.findAll();
+			for (int i=1; i<=boards.size(); i++) {
+				CommentCreateDto commentCreateDto = CommentCreateDto.builder()
+					.content("comment" + i)
+					.boardId(i + 0L)
+					.memberId(1L)
+					.build();
+				commentService.createComment(commentCreateDto);
+			}
+		}
+
 	}
 }

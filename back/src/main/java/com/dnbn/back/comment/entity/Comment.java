@@ -41,4 +41,19 @@ public class Comment extends BaseTimeEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id")
 	private Member member;
+
+	public void setBoard(Board board) {
+		this.board = board;
+	}
+
+	public void setMember(Member member) {
+		this.member = member;
+	}
+
+	public boolean matchMember(Long memberId) {
+		if (member.getId() != memberId) {
+			return false;
+		}
+		return true;
+	}
 }

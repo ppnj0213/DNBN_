@@ -26,16 +26,13 @@ public class LoginFailHandler implements AuthenticationFailureHandler {
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 		response.setCharacterEncoding("UTF-8");
+		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 
 		ErrorCode errorCode = ErrorCode.LOGIN_FAILED;
 
 		log.error(errorCode.getMessage());
 
-		ErrorResponse errorResponse = ErrorResponse.builder()
-			.message(errorCode.getMessage())
-			.httpStatus(errorCode.getHttpStatus())
-			.errorCode(errorCode)
-			.build();
+		ErrorResponse errorResponse = new ErrorResponse(errorCode.getMessage(), errorCode.getHttpStatus());
 
 		objectMapper.writeValue(response.getWriter(), errorResponse);
 	}

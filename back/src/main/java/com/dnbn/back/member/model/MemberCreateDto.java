@@ -19,7 +19,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class MemberCreateDto {
 
-	private Long id;
 	private String userId;
 	private String userPw;
 	private String nickname;

@@ -26,16 +26,13 @@ public class Http403Handler implements AccessDeniedHandler {
 	public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 		response.setCharacterEncoding("UTF-8");
+		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
-		ErrorCode errorCode = ErrorCode.NO_ACCESS;
+		ErrorCode errorCode = ErrorCode.NO_ACCESS_PAGE;
 
 		log.error(errorCode.getMessage());
 
-		ErrorResponse errorResponse = ErrorResponse.builder()
-			.message(errorCode.getMessage())
-			.httpStatus(errorCode.getHttpStatus())
-			.errorCode(errorCode)
-			.build();
+		ErrorResponse errorResponse = new ErrorResponse(errorCode.getMessage(), errorCode.getHttpStatus());
 
 		objectMapper.writeValue(response.getWriter(), errorResponse);
 	}

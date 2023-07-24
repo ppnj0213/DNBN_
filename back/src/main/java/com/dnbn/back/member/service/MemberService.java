@@ -35,24 +35,25 @@ public class MemberService {
 	 */
 	@Transactional
 	public Long join(MemberCreateDto memberCreateDto) {
-		// 비밀번호 암호화
+		// 1. 비밀번호 암호화
 		String rawPassword = memberCreateDto.getUserPw();
 		String encPassword = !rawPassword.isEmpty() ? bCryptPasswordEncoder.encode(rawPassword) : null; // 공백도 암호화 되는 문제 때문에 validation 체크를 위해 null 처리
 		memberCreateDto.setUserPw(encPassword);
-
-		// Member 생성
+		// 2. Member 엔티티 변환
 		Member member = memberCreateDto.toEntity();
+		// 2.1. validation
 		validateMember(member);
 		Member savedMember = memberRepository.save(member);
-
-		// MyRegion 생성
+		// 3. MyRegion 생성
 		List<MyRegionDto> myRegionDtos = memberCreateDto.getMyRegions();
 		for (MyRegionDto myRegionDto : myRegionDtos) {
 			MyRegion myRegion = myRegionDto.toEntity();
+			// 3.1. validation
 			validateMyRegion(myRegion);
 			myRegion.setMember(savedMember);
 			myRegionRepository.save(myRegion);
 		}
+		//  4. 저장
 		return savedMember.getId();
 	}
 
@@ -69,20 +70,19 @@ public class MemberService {
 	 */
 	@Transactional
 	public Long updateMember(Long memberId, MemberUpdateDto memberUpdateDto) {
+		// 1. 회원,내동네 fetch join
 		Member member = memberRepository.findByIdWithMyRegion(memberId)
 			.orElseThrow(() -> new MemberException(ErrorCode.MEMBER_NOT_FOUND));
-		List<MyRegion> myRegions = member.getMyRegions();
-
-		// 비밀번호 변경된 경우 암호화
+		// 2. 비밀번호 변경된 경우 암호화
 		if (hasText(memberUpdateDto.getUserPw())) {
 			String rawPassword = memberUpdateDto.getUserPw();
 			String encPassword = bCryptPasswordEncoder.encode(rawPassword);
 			memberUpdateDto.setUserPw(encPassword);
 		}
-		member.editMember(memberUpdateDto); // 기본정보 update
-
-		// 동네 변경된 경우 id로 체크
-		myRegions.forEach(myRegion -> {
+		// 3. 회원 기본정보 update
+		member.editMember(memberUpdateDto);
+		// 4. 내동네 변경된 경우 PK 값으로 비교 후 update
+		member.getMyRegions().forEach(myRegion -> {
 			memberUpdateDto.getMyRegions()
 				.stream()
 				.filter(myRegionDto -> myRegion.getId().equals(myRegionDto.getId()))
@@ -95,7 +95,7 @@ public class MemberService {
 	 * 내동네 유효성 검사
 	 */
 	private void validateMyRegion(MyRegion myRegion) {
-		//필수값 체크
+		// 1. 필수값 체크
 		myRegion.validateRequiredFields();
 	}
 
@@ -103,9 +103,9 @@ public class MemberService {
 	 *  멤버 유효성 검사
 	 */
 	private void validateMember(Member member) {
-		// 필수값 체크
+		// 1. 필수값 체크
 		member.validateRequiredFields();
-		// 아이디, 닉네임 중복체크
+		// 2. 아이디, 닉네임 중복체크
 		isUserIdDuplicated(member.getUserId());
 		isNicknameDuplicated(member.getNickname());
 	}
@@ -131,7 +131,7 @@ public class MemberService {
 	}
 
 	/**
-	 * 영속화 용 멤버 조회 메서드
+	 * 회원 조회
 	 */
 	public Member getMember(Long memberId) {
 		return memberRepository.findById(memberId)

@@ -36,7 +36,7 @@ public class MemberController {
 	// }
 
 	@PostMapping("/signup")
-	public ResponseEntity<?> createMember(@RequestBody MemberCreateDto memberCreateDto) {
+	public ResponseEntity<String> createMember(@RequestBody MemberCreateDto memberCreateDto) {
 		memberService.join(memberCreateDto);
 		return ResponseEntity.ok("회원가입 success");
 	}

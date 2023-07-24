@@ -26,16 +26,13 @@ public class Http401Handler implements AuthenticationEntryPoint {
 	public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 		response.setCharacterEncoding("UTF-8");
+		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
 		ErrorCode errorCode = ErrorCode.LOGIN_NEEDED;
 
 		log.error(errorCode.getMessage());
 
-		ErrorResponse errorResponse = ErrorResponse.builder()
-			.message(errorCode.getMessage())
-			.httpStatus(errorCode.getHttpStatus())
-			.errorCode(errorCode)
-			.build();
+		ErrorResponse errorResponse = new ErrorResponse(errorCode.getMessage(), errorCode.getHttpStatus());
 
 		objectMapper.writeValue(response.getWriter(), errorResponse);
 	}
