@@ -1,6 +1,8 @@
-package com.dnbn.back.common.exception;
+package com.dnbn.back.common.error.exception;
 
 import org.springframework.http.HttpStatus;
+
+import com.dnbn.back.common.error.ErrorCode;
 
 public class MemberException extends RuntimeException {
 	private final ErrorCode errorCode;

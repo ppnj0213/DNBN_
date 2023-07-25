@@ -8,8 +8,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.dnbn.back.common.exception.ErrorCode;
-import com.dnbn.back.common.exception.MemberException;
+import com.dnbn.back.common.error.ErrorCode;
+import com.dnbn.back.common.error.exception.MemberException;
 import com.dnbn.back.member.entity.Member;
 import com.dnbn.back.member.entity.MyRegion;
 import com.dnbn.back.member.model.MemberCreateDto;

@@ -6,12 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.util.StringUtils;
 
 import com.dnbn.back.board.entity.Board;
 import com.dnbn.back.common.entity.BaseTimeEntity;
-import com.dnbn.back.common.exception.ErrorCode;
-import com.dnbn.back.common.exception.MemberException;
+import com.dnbn.back.common.error.ErrorCode;
+import com.dnbn.back.common.error.exception.MemberException;
 import com.dnbn.back.member.model.MemberUpdateDto;
 
 import jakarta.persistence.CascadeType;

@@ -1,8 +1,7 @@
-package com.dnbn.back.common.exception;
+package com.dnbn.back.common.error;
 
 import org.springframework.http.HttpStatus;
 
-import lombok.Builder;
 import lombok.Getter;
 
 @Getter

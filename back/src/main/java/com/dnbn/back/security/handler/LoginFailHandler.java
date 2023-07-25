@@ -6,8 +6,8 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
-import com.dnbn.back.common.exception.ErrorCode;
-import com.dnbn.back.common.exception.ErrorResponse;
+import com.dnbn.back.common.error.ErrorCode;
+import com.dnbn.back.common.error.ErrorResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.ServletException;

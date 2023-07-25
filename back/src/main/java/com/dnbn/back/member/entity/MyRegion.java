@@ -2,10 +2,8 @@ package com.dnbn.back.member.entity;
 
 import static org.springframework.util.StringUtils.*;
 
-import org.springframework.util.StringUtils;
-
-import com.dnbn.back.common.exception.ErrorCode;
-import com.dnbn.back.common.exception.MemberException;
+import com.dnbn.back.common.error.ErrorCode;
+import com.dnbn.back.common.error.exception.MemberException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;

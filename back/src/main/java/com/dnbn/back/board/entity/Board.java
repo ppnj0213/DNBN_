@@ -10,8 +10,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import com.dnbn.back.board.model.BoardUpdateDto;
 import com.dnbn.back.comment.entity.Comment;
 import com.dnbn.back.common.entity.BaseTimeEntity;
-import com.dnbn.back.common.exception.BoardException;
-import com.dnbn.back.common.exception.ErrorCode;
+import com.dnbn.back.common.error.exception.BoardException;
+import com.dnbn.back.common.error.ErrorCode;
 import com.dnbn.back.member.entity.Member;
 
 import jakarta.persistence.CascadeType;

@@ -13,8 +13,8 @@ public class QCommentDetailDto extends ConstructorExpression<CommentDetailDto> {
 
     private static final long serialVersionUID = 1931599103L;
 
-    public QCommentDetailDto(com.querydsl.core.types.Expression<Long> commentId, com.querydsl.core.types.Expression<Long> boardId, com.querydsl.core.types.Expression<String> content, com.querydsl.core.types.Expression<java.time.LocalDateTime> createdDate, com.querydsl.core.types.Expression<java.time.LocalDateTime> modifiedDate) {
-        super(CommentDetailDto.class, new Class<?>[]{long.class, long.class, String.class, java.time.LocalDateTime.class, java.time.LocalDateTime.class}, commentId, boardId, content, createdDate, modifiedDate);
+    public QCommentDetailDto(com.querydsl.core.types.Expression<Long> commentId, com.querydsl.core.types.Expression<Long> boardId, com.querydsl.core.types.Expression<Long> memberId, com.querydsl.core.types.Expression<String> content, com.querydsl.core.types.Expression<java.time.LocalDateTime> createdDate, com.querydsl.core.types.Expression<java.time.LocalDateTime> modifiedDate) {
+        super(CommentDetailDto.class, new Class<?>[]{long.class, long.class, long.class, String.class, java.time.LocalDateTime.class, java.time.LocalDateTime.class}, commentId, boardId, memberId, content, createdDate, modifiedDate);
     }
 
 }

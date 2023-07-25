@@ -1,6 +1,5 @@
 package com.dnbn.back.comment.service;
 
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -9,8 +8,8 @@ import com.dnbn.back.board.service.BoardService;
 import com.dnbn.back.comment.entity.Comment;
 import com.dnbn.back.comment.model.CommentCreateDto;
 import com.dnbn.back.comment.repository.CommentRepository;
-import com.dnbn.back.common.exception.CommentException;
-import com.dnbn.back.common.exception.ErrorCode;
+import com.dnbn.back.common.error.exception.CommentException;
+import com.dnbn.back.common.error.ErrorCode;
 import com.dnbn.back.member.entity.Member;
 import com.dnbn.back.member.service.MemberService;
 

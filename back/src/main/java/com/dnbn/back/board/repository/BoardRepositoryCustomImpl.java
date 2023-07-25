@@ -5,7 +5,6 @@ import static com.dnbn.back.board.entity.QLike.*;
 import static com.dnbn.back.comment.entity.QComment.*;
 import static com.querydsl.jpa.JPAExpressions.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -55,41 +54,47 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
 				select(like.id.count())
 					.from(like)
 					.where(like.board.id.eq(board.id))
-			))
-			.from(board)
-			.where(sidoCodeEq(cond.getSido_code()),
-				   sigoonCodeEq(cond.getSigoon_code()),
-				   dongCodeEq(cond.getDong_code()),
-				   writerEq(cond.getWriter()))
-			.orderBy(board.id.desc())
-			.offset(pageable.getOffset())
-			.limit(pageable.getPageSize() + 1)
-			.fetch();
+				))
+				.from(board)
+				.where(sidoCodeEq(cond.getSido_code()),
+					   sigoonCodeEq(cond.getSigoon_code()),
+					   dongCodeEq(cond.getDong_code()),
+					   writerEq(cond.getWriter()))
+				.orderBy(board.id.desc())
+				.offset(pageable.getOffset())
+				.limit(pageable.getPageSize() + 1)
+				.fetch();
 
-		// 요청받은 조회 개수(5) + 1 만큼 조회해서 조회된 사이즈(6)가 요청한 사이즈(5)보다 크면 다음 페이지가 있다는 뜻이기 때문에 hasNext = true.
-		boolean hasNext = result.size() > pageable.getPageSize(); // 조회 사이즈(6) > 요청 사이즈(5) ? true : false
+		boolean hasNext = result.size() > pageable.getPageSize();
 		if (hasNext) {
-			// hasNext 값이 true 인 것이 확인이 됐으므로 원래 요청한 사이즈(5)로 원복
 			result.remove(result.size() -1);
 		}
 
-		// 댓글 조회
+		// 댓글 최신 1개 조회
 		List<Long> boardIds = result.stream().map(BoardDetailDto::getBoardId).toList();
-		Map<Long, List<CommentDetailDto>> commentMap =
-			queryFactory.select(new QCommentDetailDto (
+		Map<Long, CommentDetailDto> commentMap =
+			queryFactory.select(new QCommentDetailDto(
 				comment.id,
 				comment.board.id,
+				comment.member.id,
 				comment.content,
 				comment.createdDate,
-				comment.modifiedDate
-			))
-			.from(comment)
-			.where(comment.board.id.in(boardIds))
-			.fetch()
-			.stream()
-			.collect(Collectors.groupingBy(CommentDetailDto::getBoardId));
+				comment.modifiedDate))
+				.from(comment)
+				.where(comment.board.id.in(boardIds))
+				.orderBy(comment.id.desc())
+				.fetch()
+				.stream()
+				.collect(Collectors.toMap(
+					CommentDetailDto::getBoardId, // key
+					commentDetailDto -> commentDetailDto, // value
+					(boardId1, boardId2) -> boardId1) // 중복제거 조건
+				);
 
-		result.forEach(boardDetailDto -> boardDetailDto.setComments(commentMap.getOrDefault(boardDetailDto.getBoardId(), new ArrayList<>())));
+		result.forEach(boardDetailDto -> {
+			CommentDetailDto commentDetailDto = commentMap.get(boardDetailDto.getBoardId());
+			boardDetailDto.setCommentDetailDto(commentDetailDto);
+		});
 
 		return new SliceImpl<>(result, pageable, hasNext);
 	}

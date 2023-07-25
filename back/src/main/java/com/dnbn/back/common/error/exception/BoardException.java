@@ -1,17 +1,19 @@
-package com.dnbn.back.common.exception;
+package com.dnbn.back.common.error.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class CommentException extends RuntimeException {
+import com.dnbn.back.common.error.ErrorCode;
+
+public class BoardException extends RuntimeException {
 	private final ErrorCode errorCode;
 	private final String message;
 	private final HttpStatus httpStatus;
 
-	public CommentException(ErrorCode errorCode) {
+	public BoardException(ErrorCode errorCode) {
 		this(errorCode, errorCode.getMessage(), errorCode.getHttpStatus());
 	}
 
-	public CommentException(ErrorCode errorCode, String message, HttpStatus status) {
+	public BoardException(ErrorCode errorCode, String message, HttpStatus status) {
 		super(message);
 		this.errorCode = errorCode;
 		this.message = message;

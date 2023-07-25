@@ -1,9 +1,11 @@
-package com.dnbn.back.common.exception;
+package com.dnbn.back.common.error.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import com.dnbn.back.common.error.ErrorResponse;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -62,6 +64,7 @@ public class CommonExceptionHandler {
 	protected ResponseEntity<ErrorResponse> handleGenericException(Exception e) {
 		log.error(e.getMessage());
 		log.error("StackTrace : {}", e.getStackTrace());
+		e.printStackTrace();
 
 		return ResponseEntity
 			.status(HttpStatus.INTERNAL_SERVER_ERROR)

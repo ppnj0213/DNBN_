@@ -2,6 +2,8 @@ server:
   port: 8098
 
 spring:
+  mvc:
+    log-resolved-exception: false
   session:
     jdbc:
       initialize-schema: always

@@ -19,7 +19,8 @@ public class BoardDetailDto {
 	private LocalDateTime createdDate;
 	private LocalDateTime modifiedDate;
 	private Long likedCnt;
-	private List<CommentDetailDto> comments;
+	private CommentDetailDto commentDetailDto;
+	// private List<CommentDetailDto> comments;
 
 	// @QueryProjection
 	public BoardDetailDto(Long boardId, Long memberId, String sido_code, String sigoon_code, String dong_code, String content, String writer,
