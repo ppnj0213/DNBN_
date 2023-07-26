@@ -20,6 +20,7 @@ import com.dnbn.back.comment.model.CommentDetailDto;
 import com.dnbn.back.comment.model.QCommentDetailDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
@@ -41,29 +42,36 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
 	public Slice<BoardDetailDto> getBoardListWithSlice(Pageable pageable, BoardSearchCond cond) {
 		// 게시글 조회
 		List<BoardDetailDto> result =
-			queryFactory.select(Projections.constructor(BoardDetailDto.class,
-				board.id,
-				board.member.id,
-				board.sido_code,
-				board.sigoon_code,
-				board.dong_code,
-				board.content,
-				board.writer,
-				board.createdDate,
-				board.modifiedDate,
-				select(like.id.count())
-					.from(like)
-					.where(like.board.id.eq(board.id))
-				))
-				.from(board)
-				.where(sidoCodeEq(cond.getSido_code()),
-					   sigoonCodeEq(cond.getSigoon_code()),
-					   dongCodeEq(cond.getDong_code()),
-					   writerEq(cond.getWriter()))
-				.orderBy(board.id.desc())
-				.offset(pageable.getOffset())
-				.limit(pageable.getPageSize() + 1)
-				.fetch();
+			queryFactory.select(
+				Projections.constructor(BoardDetailDto.class,
+					board.id,
+					board.member.id,
+					board.sido_code,
+					board.sigoon_code,
+					board.dong_code,
+					board.content,
+					board.writer,
+					board.createdDate,
+					board.modifiedDate,
+					select(like.id.count())
+						.from(like)
+						.where(like.board.id.eq(board.id)),
+					select(new CaseBuilder()
+						.when(comment.count().gt(1)).then(true)
+						.otherwise(false))
+						.from(comment)
+						.where(comment.board.id.eq(board.id))
+				)
+			)
+			.from(board)
+			.where(sidoCodeEq(cond.getSido_code()),
+				   sigoonCodeEq(cond.getSigoon_code()),
+				   dongCodeEq(cond.getDong_code()),
+				   writerEq(cond.getWriter()))
+			.orderBy(board.id.desc())
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize() + 1)
+			.fetch();
 
 		boolean hasNext = result.size() > pageable.getPageSize();
 		if (hasNext) {
@@ -73,23 +81,26 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
 		// 댓글 최신 1개 조회
 		List<Long> boardIds = result.stream().map(BoardDetailDto::getBoardId).toList();
 		Map<Long, CommentDetailDto> commentMap =
-			queryFactory.select(new QCommentDetailDto(
-				comment.id,
-				comment.board.id,
-				comment.member.id,
-				comment.content,
-				comment.createdDate,
-				comment.modifiedDate))
-				.from(comment)
-				.where(comment.board.id.in(boardIds))
-				.orderBy(comment.id.desc())
-				.fetch()
-				.stream()
-				.collect(Collectors.toMap(
-					CommentDetailDto::getBoardId, // key
-					commentDetailDto -> commentDetailDto, // value
-					(boardId1, boardId2) -> boardId1) // 중복제거 조건
-				);
+			queryFactory.select(
+				new QCommentDetailDto(
+					comment.id,
+					comment.board.id,
+					comment.member.id,
+					comment.content,
+					comment.createdDate,
+					comment.modifiedDate
+				)
+			)
+			.from(comment)
+			.where(comment.board.id.in(boardIds))
+			.orderBy(comment.id.desc())
+			.fetch()
+			.stream()
+			.collect(Collectors.toMap(
+				CommentDetailDto::getBoardId, // key
+				commentDetailDto -> commentDetailDto, // value
+				(boardId1, boardId2) -> boardId1) // 중복제거 조건
+			);
 
 		result.forEach(boardDetailDto -> {
 			CommentDetailDto commentDetailDto = commentMap.get(boardDetailDto.getBoardId());

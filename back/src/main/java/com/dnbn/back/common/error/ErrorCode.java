@@ -24,7 +24,7 @@ public enum ErrorCode {
 	NO_ACCESS_PAGE("ACCESS", "해당 페이지에 대한 권한이 없습니다.", HttpStatus.UNAUTHORIZED),
 	LOGIN_NEEDED("ACCESS", "로그인이 필요합니다.", HttpStatus.UNAUTHORIZED),
 	NO_ACCESS_BOARD("BOARD", "해당 게시글에 대한 수정/삭제 권한이 없습니다.", HttpStatus.UNAUTHORIZED),
-	NO_ACCESS_COMMENT("COMMENT", "해당 게시글에 대한 수정/삭제 권한이 없습니다.", HttpStatus.UNAUTHORIZED),
+	NO_ACCESS_COMMENT("COMMENT", "해당 댓글에 대한 삭제 권한이 없습니다.", HttpStatus.UNAUTHORIZED),
 
 	// 게시판
 	BOARD_NOT_FOUND("BOARD", "게시글이 존재하지 않습니다.", HttpStatus.NOT_FOUND),

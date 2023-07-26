@@ -43,23 +43,23 @@ public class SecurityConfig {
 			.csrf(AbstractHttpConfigurer::disable)
 			.cors(AbstractHttpConfigurer::disable)
 			.authorizeHttpRequests((requests) -> requests
-				.requestMatchers("/api/members/login", "/api/members/signup/**").permitAll()
-				.requestMatchers("/user/**").hasAnyRole("USER", "ADMIN") // 권한 여러개
-				.requestMatchers("/admin/**").hasRole("ADMIN")
+				.requestMatchers("/api/members/login", "/api/members/signup/**").permitAll() // 로그인, 회원가입에 관련된 요청은 항상 허용
+				// .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN") // 권한 여러개
+				// .requestMatchers("/admin/**").hasRole("ADMIN")
 				.anyRequest().authenticated() // 어떤 요청이라도 인증 필요
-			)
-			.logout(Customizer.withDefaults() // "/logout" 으로 인증 해제
-				// (logout) -> logout
-				// .logoutSuccessUrl("/login")
-				// .invalidateHttpSession(true)
 			)
 			.formLogin(login -> login
 				.usernameParameter("userId")
 				.passwordParameter("userPw")
-				.loginPage("/api/members/login") // 로그인 페이지
-				// .loginProcessingUrl("/api/members/login") // 실제 post로 값을 받아서 검증하는 주소
-				.defaultSuccessUrl("/api/members/login") // 로그인 성공 시 이동할 주소
+				.loginPage("/api/members/login") // 로그인 요청 url
+				// .defaultSuccessUrl("/api/members/login") // 로그인 성공 시 이동할 url
 				.failureHandler(new LoginFailHandler(objectMapper))
+			)
+			.logout(
+				// Customizer.withDefaults() // "/logout" 으로 인증 해제
+				(logout) -> logout.logoutUrl("/api/logout")
+				// .logoutSuccessUrl("/login")
+				.invalidateHttpSession(true) // 세션 제거
 			)
 			.rememberMe(rm -> rm
 				.alwaysRemember(false)

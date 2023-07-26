@@ -1,5 +1,7 @@
 package com.dnbn.back.comment.service;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -7,6 +9,7 @@ import com.dnbn.back.board.entity.Board;
 import com.dnbn.back.board.service.BoardService;
 import com.dnbn.back.comment.entity.Comment;
 import com.dnbn.back.comment.model.CommentCreateDto;
+import com.dnbn.back.comment.model.CommentDetailDto;
 import com.dnbn.back.comment.repository.CommentRepository;
 import com.dnbn.back.common.error.exception.CommentException;
 import com.dnbn.back.common.error.ErrorCode;
@@ -37,13 +40,17 @@ public class CommentService {
 		commentRepository.save(comment);
 	}
 
+	public Slice<CommentDetailDto> getCommentListWithSlice(Pageable pageable, Long boardId) {
+		return commentRepository.findCommentListWithSlice(pageable, boardId);
+	}
+
 	/**
 	 * 댓글 삭제
 	 */
 	@Transactional
-	public void deleteComment(Long commentId) {
+	public void deleteComment(Long commentId, Long memberId) {
 		Comment comment = getComment(commentId);
-		if (comment.matchMember(comment.getMember().getId())) {
+		if (comment.matchMember(memberId)) {
 			commentRepository.deleteById(commentId);
 		} else {
 			throw new CommentException(ErrorCode.NO_ACCESS_COMMENT);

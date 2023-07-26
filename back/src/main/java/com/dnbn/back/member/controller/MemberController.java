@@ -1,6 +1,7 @@
 package com.dnbn.back.member.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +14,7 @@ import com.dnbn.back.member.model.MemberCreateDto;
 import com.dnbn.back.member.model.MemberDetailDto;
 import com.dnbn.back.member.model.MemberUpdateDto;
 import com.dnbn.back.member.service.MemberService;
+import com.dnbn.back.security.auth.MemberDetails;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,13 +28,13 @@ public class MemberController {
 	private final MemberService memberService;
 
 	@GetMapping("/login")
-	public ResponseEntity<String> login() {
-		return ResponseEntity.ok("로그인 success");
+	public ResponseEntity<MemberDetails> login(@AuthenticationPrincipal MemberDetails memberDetails) {
+		return ResponseEntity.ok(memberDetails);
 	}
 
 	// @PostMapping("/login")
-	// public ResponseEntity<String> loginSuccess(MemberLoginDto memberLoginDto) {
-	// 	return ResponseEntity.ok("로그인 success");
+	// public ResponseEntity<MemberDetails> loginSuccess() {
+	// 	return ResponseEntity.ok(memberDetails);
 	// }
 
 	@PostMapping("/signup")
