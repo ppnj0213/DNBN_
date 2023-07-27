@@ -55,7 +55,7 @@ public class MyRegion {
 
 	public void editMyRegion(MyRegion myRegion) {
 		if (hasText(myRegion.isMainRegion)) {
-			isMainRegion = myRegion.isMainRegion;
+			isMainRegion = myRegion.isMainRegion.toUpperCase();
 		} else {
 			isMainRegion = "N";
 		}

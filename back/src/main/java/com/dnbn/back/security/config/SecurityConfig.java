@@ -52,7 +52,7 @@ public class SecurityConfig {
 				.usernameParameter("userId")
 				.passwordParameter("userPw")
 				.loginPage("/api/members/login") // 로그인 요청 url
-				// .defaultSuccessUrl("/api/members/login") // 로그인 성공 시 이동할 url
+				.defaultSuccessUrl("/api/members/login") // 로그인 성공 시 이동할 url
 				.failureHandler(new LoginFailHandler(objectMapper))
 			)
 			.logout(

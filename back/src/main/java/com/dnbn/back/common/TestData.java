@@ -15,16 +15,12 @@ import com.dnbn.back.board.repository.BoardRepository;
 import com.dnbn.back.board.service.BoardService;
 import com.dnbn.back.comment.model.CommentCreateDto;
 import com.dnbn.back.comment.service.CommentService;
-import com.dnbn.back.member.entity.Member;
 import com.dnbn.back.member.entity.Role;
 import com.dnbn.back.member.model.MemberCreateDto;
 import com.dnbn.back.member.model.MyRegionDto;
-import com.dnbn.back.member.repository.MemberRepository;
 import com.dnbn.back.member.service.MemberService;
 
 import jakarta.annotation.PostConstruct;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 
 @Profile({"local","test"})
@@ -54,7 +50,7 @@ public class TestData {
 			List<MyRegionDto> myRegions = new ArrayList<>();
 			MyRegionDto region1 = MyRegionDto.builder()
 				.id(1L)
-				.isMainRegion("Y")
+				.mainRegionYn("Y")
 				.sido_code("10")
 				.sido_name("서울시")
 				.sigoon_code("1010")
@@ -65,7 +61,7 @@ public class TestData {
 
 			MyRegionDto region2 = MyRegionDto.builder()
 				.id(2L)
-				.isMainRegion("N")
+				.mainRegionYn("N")
 				.sido_code("20")
 				.sido_name("부천시")
 				.sigoon_code("2020")
@@ -106,6 +102,7 @@ public class TestData {
 					.sigoon_code(i < 11 ? "1010" : "2020")
 					.dong_code(i < 11 ? "101010" : "202020")
 					.writer("주비")
+					.openYn(i < 11 ? "Y" : "N")
 					.build();
 				boardService.createBoard(boardCreateDto);
 			}

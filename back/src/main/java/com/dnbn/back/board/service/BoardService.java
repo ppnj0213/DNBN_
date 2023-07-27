@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.dnbn.back.board.entity.Board;
+import com.dnbn.back.board.entity.BoardType;
 import com.dnbn.back.board.entity.Like;
 import com.dnbn.back.board.model.BoardCreateDto;
 import com.dnbn.back.board.model.BoardDetailDto;
@@ -51,8 +52,8 @@ public class BoardService {
 	/**
 	 * 게시판 조회
 	 */
-	public Slice<BoardDetailDto> getBoardListWithSlice(Pageable pageable, BoardSearchCond cond) {
-		return boardRepository.getBoardListWithSlice(pageable, cond);
+	public Slice<BoardDetailDto> getBoardListWithSlice(BoardType type, Pageable pageable, BoardSearchCond cond) {
+		return boardRepository.getBoardListWithSlice(type, pageable, cond);
 	}
 
 	/**

@@ -2,7 +2,9 @@ package com.dnbn.back.member.service;
 
 import static org.springframework.util.StringUtils.*;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -46,12 +48,18 @@ public class MemberService {
 		Member savedMember = memberRepository.save(member);
 		// 3. MyRegion 생성
 		List<MyRegionDto> myRegionDtos = memberCreateDto.getMyRegions();
+		Set<String> regionSet = new HashSet<>();
 		for (MyRegionDto myRegionDto : myRegionDtos) {
 			MyRegion myRegion = myRegionDto.toEntity();
 			// 3.1. validation
 			validateMyRegion(myRegion);
 			myRegion.setMember(savedMember);
 			myRegionRepository.save(myRegion);
+
+			regionSet.add(myRegionDto.getMainRegionYn());
+		}
+		if (regionSet.size() == 1) {
+			throw new MemberException(ErrorCode.MAIN_REGION_UNACCEPTABLE);
 		}
 		//  4. 저장
 		return savedMember.getId();

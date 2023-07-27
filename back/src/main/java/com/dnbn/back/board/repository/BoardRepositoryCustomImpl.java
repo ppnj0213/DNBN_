@@ -14,6 +14,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 
 import com.dnbn.back.board.entity.Board;
+import com.dnbn.back.board.entity.BoardType;
 import com.dnbn.back.board.model.BoardDetailDto;
 import com.dnbn.back.board.model.BoardSearchCond;
 import com.dnbn.back.comment.model.CommentDetailDto;
@@ -39,7 +40,7 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
 	}
 
 	@Override
-	public Slice<BoardDetailDto> getBoardListWithSlice(Pageable pageable, BoardSearchCond cond) {
+	public Slice<BoardDetailDto> getBoardListWithSlice(BoardType type, Pageable pageable, BoardSearchCond cond) {
 		// 게시글 조회
 		List<BoardDetailDto> result =
 			queryFactory.select(
@@ -67,7 +68,8 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
 			.where(sidoCodeEq(cond.getSido_code()),
 				   sigoonCodeEq(cond.getSigoon_code()),
 				   dongCodeEq(cond.getDong_code()),
-				   writerEq(cond.getWriter()))
+				   writerEq(cond.getWriter()),
+				   openYnEq(cond.getOpenYn()))
 			.orderBy(board.id.desc())
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize() + 1)
@@ -124,5 +126,9 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
 
 	private BooleanExpression writerEq(String writerCond) {
 		return !writerCond.isEmpty() ? board.writer.eq(writerCond) : null;
+	}
+
+	private BooleanExpression openYnEq(String openYnCond) {
+		return !openYnCond.isEmpty() ? board.openYn.eq(openYnCond.toUpperCase()) : board.openYn.eq("Y");
 	}
 }

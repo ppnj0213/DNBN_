@@ -44,7 +44,7 @@ class BoardRepositoryTest {
 	@Test
 	public void getBoardListWithSliceTest() throws Exception {
 	    //given
-		BoardSearchCond cond = new BoardSearchCond("10", "1010", "101010", "junyeobk");
+		BoardSearchCond cond = new BoardSearchCond("10", "1010", "101010", "junyeobk", "Y");
 
 		PageRequest firstRequest = PageRequest.of(0, 5);
 		Slice<BoardDetailDto> firstResult = boardRepository.getBoardListWithSlice(firstRequest, cond);

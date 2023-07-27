@@ -20,12 +20,12 @@ public class BoardDetailDto {
 	private LocalDateTime modifiedDate;
 	private Long likedCnt;
 	private CommentDetailDto commentDetailDto;
-	private boolean hasNext;
+	private boolean hasNextComment;
 	// private List<CommentDetailDto> comments;
 
 	// @QueryProjection
 	public BoardDetailDto(Long boardId, Long memberId, String sido_code, String sigoon_code, String dong_code, String content, String writer,
-		LocalDateTime createdDate, LocalDateTime modifiedDate, Long likedCnt, boolean hasNext) {
+		LocalDateTime createdDate, LocalDateTime modifiedDate, Long likedCnt, boolean hasNextComment) {
 		this.boardId = boardId;
 		this.memberId = memberId;
 		this.sido_code = sido_code;
@@ -36,7 +36,7 @@ public class BoardDetailDto {
 		this.createdDate = createdDate;
 		this.modifiedDate = modifiedDate;
 		this.likedCnt = likedCnt;
-		this.hasNext = hasNext;
+		this.hasNextComment = hasNextComment;
 	}
 
 }

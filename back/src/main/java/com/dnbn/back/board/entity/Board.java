@@ -46,6 +46,7 @@ public class Board extends BaseTimeEntity {
 	private String dong_code;
 	private String content;
 	private String writer;
+	@Column(length = 1)
 	private String openYn;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -83,7 +84,11 @@ public class Board extends BaseTimeEntity {
         }
 
         if (writer == null || writer.isEmpty()) {
-            throw new BoardException(ErrorCode.NICKNAME_EMPTY);
+            throw new BoardException(ErrorCode.WRITER_EMPTY);
+        }
+
+		if (openYn == null || openYn.isEmpty()) {
+            throw new BoardException(ErrorCode.OPEN_YN_EMPTY);
         }
 	}
 

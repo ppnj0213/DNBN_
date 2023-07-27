@@ -1,7 +1,5 @@
 package com.dnbn.back.member.model;
 
-import java.util.List;
-
 import com.dnbn.back.member.entity.MyRegion;
 
 import lombok.AccessLevel;
@@ -23,12 +21,12 @@ public class MyRegionDto {
 	private String sigoon_name;
 	private String dong_code;
 	private String dong_name;
-	private String isMainRegion;
+	private String mainRegionYn;
 
 	public MyRegion toEntity() {
 		return MyRegion.builder()
 			.id(id)
-			.isMainRegion(isMainRegion.isEmpty() ? "N" : isMainRegion)
+			.isMainRegion(mainRegionYn.isEmpty() ? "N" : mainRegionYn.toUpperCase())
 			.sido_code(sido_code)
 			.sido_name(sido_name)
 			.sigoon_code(sigoon_code)

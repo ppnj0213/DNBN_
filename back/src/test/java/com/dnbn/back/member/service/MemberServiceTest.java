@@ -96,7 +96,7 @@ class MemberServiceTest {
 		List<MyRegionDto> myRegions = new ArrayList<>();
 		MyRegionDto region1 = MyRegionDto.builder()
 			.id(1L)
-			.isMainRegion("Y")
+			.mainRegionYn("Y")
 			.sido_code("10")
 			.sido_name("서울시")
 			.sigoon_code("1010")
@@ -107,7 +107,7 @@ class MemberServiceTest {
 
 		MyRegionDto region2 = MyRegionDto.builder()
 			.id(2L)
-			.isMainRegion("N")
+			.mainRegionYn("N")
 			.sido_code("20")
 			.sido_name("부천시")
 			.sigoon_code("2020")
@@ -129,7 +129,7 @@ class MemberServiceTest {
 	private MemberCreateDto getMemberCreateDto() {
 		List<MyRegionDto> myRegions = new ArrayList<>();
 		MyRegionDto region1 = MyRegionDto.builder()
-			.isMainRegion("Y")
+			.mainRegionYn("Y")
 			.sido_code("10")
 			.sido_name("서울시")
 			.sigoon_code("1010")
@@ -139,7 +139,7 @@ class MemberServiceTest {
 			.build();
 
 		MyRegionDto region2 = MyRegionDto.builder()
-			.isMainRegion("Y")
+			.mainRegionYn("Y")
 			.sido_code("20")
 			.sido_name("부천시")
 			.sigoon_code("2020")

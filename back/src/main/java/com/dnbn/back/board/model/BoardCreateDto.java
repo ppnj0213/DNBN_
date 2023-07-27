@@ -24,6 +24,7 @@ public class BoardCreateDto {
 	private String dong_code;
 	private String content;
 	private String writer;
+	private String openYn;
 
 	public Board toEntity() {
 		return Board.builder()
@@ -32,6 +33,7 @@ public class BoardCreateDto {
 			.dong_code(dong_code)
 			.content(content)
 			.writer(writer)
+			.openYn(openYn.toUpperCase())
 			.build();
 	}
 }
