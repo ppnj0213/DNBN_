@@ -1,11 +1,8 @@
 package com.dnbn.back.board.controller;
 
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -14,10 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dnbn.back.board.entity.BoardType;
 import com.dnbn.back.board.model.BoardCreateDto;
 import com.dnbn.back.board.model.BoardDetailDto;
-import com.dnbn.back.board.model.BoardSearchCond;
 import com.dnbn.back.board.model.BoardSearchDto;
 import com.dnbn.back.board.model.BoardUpdateDto;
 import com.dnbn.back.board.model.LikeDto;
@@ -36,10 +31,7 @@ public class BoardController {
 
 	@PostMapping
 	public ResponseEntity<Slice<BoardDetailDto>> getBoardListWithSlice(@RequestBody BoardSearchDto boardSearchDto) {
-		BoardType type 	     = boardSearchDto.getType();
-		PageRequest pageable = PageRequest.of(boardSearchDto.getPage(), boardSearchDto.getSize());
-		BoardSearchCond cond = boardSearchDto.toBoardSearchCond();
-		return ResponseEntity.ok(boardService.getBoardListWithSlice(type, pageable, cond));
+		return ResponseEntity.ok(boardService.getBoardListWithSlice(boardSearchDto));
 	}
 
 	@PostMapping("/save")

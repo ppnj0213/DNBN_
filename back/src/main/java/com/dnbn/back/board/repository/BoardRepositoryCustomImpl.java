@@ -41,6 +41,14 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
 
 	@Override
 	public Slice<BoardDetailDto> getBoardListWithSlice(BoardType type, Pageable pageable, BoardSearchCond cond) {
+		// 게시판 성격에 따라 where 절 분기
+		BooleanExpression whereClause = board.isNotNull(); // where 절 초기화
+		switch (type) {
+			case ALL  -> whereClause = getMainBoardCriteria(whereClause, cond);  // 동네별 전체 게시글
+			case MY   -> whereClause = getMyBoardCriteria(whereClause, cond);    // 내가 작성한 게시글
+			case LIKE -> whereClause = getLikedBoardCriteria(whereClause, cond); // 내가 좋아요한 게시글
+		}
+
 		// 게시글 조회
 		List<BoardDetailDto> result =
 			queryFactory.select(
@@ -65,11 +73,7 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
 				)
 			)
 			.from(board)
-			.where(sidoCodeEq(cond.getSido_code()),
-				   sigoonCodeEq(cond.getSigoon_code()),
-				   dongCodeEq(cond.getDong_code()),
-				   writerEq(cond.getWriter()),
-				   openYnEq(cond.getOpenYn()))
+			.where(whereClause)
 			.orderBy(board.id.desc())
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize() + 1)
@@ -112,6 +116,27 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
 		return new SliceImpl<>(result, pageable, hasNext);
 	}
 
+	// 동네별 전체 게시글 where 절
+	private BooleanExpression getMainBoardCriteria(BooleanExpression whereClause, BoardSearchCond cond) {
+		return whereClause.and(sidoCodeEq(cond.getSido_code()))
+			              .and(sigoonCodeEq(cond.getSigoon_code()))
+			              .and(dongCodeEq(cond.getDong_code()))
+			              .and(writerEq(cond.getWriter()))
+			              .and(openYnEq(cond.getOpenYn()));
+	}
+
+	// 내가 작성한 게시글 where 절
+	private BooleanExpression getMyBoardCriteria(BooleanExpression whereClause, BoardSearchCond cond) {
+		return whereClause.and(memberIdEq(cond.getMemberId()));
+	}
+
+	// 내가 좋아요한 게시글 where 절
+	private BooleanExpression getLikedBoardCriteria(BooleanExpression whereClause, BoardSearchCond cond) {
+		return whereClause.and(boardIdIn(cond.getMemberId()));
+	}
+
+	/***************************************** where 조건 메소드 *****************************************/
+
 	private BooleanExpression sidoCodeEq(String sidoCodeCond) {
 		return !sidoCodeCond.isEmpty() ? board.sido_code.eq(sidoCodeCond) : null;
 	}
@@ -130,5 +155,15 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
 
 	private BooleanExpression openYnEq(String openYnCond) {
 		return !openYnCond.isEmpty() ? board.openYn.eq(openYnCond.toUpperCase()) : board.openYn.eq("Y");
+	}
+
+	private BooleanExpression memberIdEq(Long memberIdCond) {
+		return memberIdCond != null ? board.member.id.eq(memberIdCond) : null;
+	}
+
+	private BooleanExpression boardIdIn(Long memberIdCond) {
+		return memberIdCond != null ? board.id.in(select(like.board.id)
+												  .from(like)
+												  .where(like.member.id.eq(memberIdCond))) : null;
 	}
 }

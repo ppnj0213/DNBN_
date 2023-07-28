@@ -13,6 +13,7 @@ public class BoardSearchDto {
 	private String sigoon_code;
 	private String dong_code;
 	private String writer;
+	private Long memberId;
 	private String openYn;
 
 	public BoardSearchCond toBoardSearchCond() {
@@ -21,6 +22,7 @@ public class BoardSearchDto {
 			.sigoon_code(this.sigoon_code)
 			.dong_code(this.dong_code)
 			.writer(this.writer)
+			.memberId(this.memberId)
 			.openYn(this.openYn)
 			.build();
 	}

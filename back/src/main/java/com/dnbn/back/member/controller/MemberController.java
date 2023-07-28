@@ -33,7 +33,7 @@ public class MemberController {
 	}
 
 	// @PostMapping("/login")
-	// public ResponseEntity<MemberDetails> loginSuccess() {
+	// public ResponseEntity<MemberDetails> loginSuccess(@AuthenticationPrincipal MemberDetails memberDetails) {
 	// 	return ResponseEntity.ok(memberDetails);
 	// }
 

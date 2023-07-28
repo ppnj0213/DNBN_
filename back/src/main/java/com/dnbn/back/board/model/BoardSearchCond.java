@@ -12,14 +12,16 @@ public class BoardSearchCond {
 	private String sigoon_code;
 	private String dong_code;
 	private String writer;
+	private Long memberId;
 	private String openYn;
 
 	@Builder
-	public BoardSearchCond(String sido_code, String sigoon_code, String dong_code, String writer, String openYn) {
+	public BoardSearchCond(String sido_code, String sigoon_code, String dong_code, String writer, Long memberId, String openYn) {
 		this.sido_code = sido_code;
 		this.sigoon_code = sigoon_code;
 		this.dong_code = dong_code;
 		this.writer = writer;
+		this.memberId = memberId;
 		this.openYn = openYn;
 	}
 }

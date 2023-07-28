@@ -58,8 +58,8 @@ public class SecurityConfig {
 			.logout(
 				// Customizer.withDefaults() // "/logout" 으로 인증 해제
 				(logout) -> logout.logoutUrl("/api/logout")
-				// .logoutSuccessUrl("/login")
 				.invalidateHttpSession(true) // 세션 제거
+				.permitAll()
 			)
 			.rememberMe(rm -> rm
 				.alwaysRemember(false)
