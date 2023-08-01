@@ -19,6 +19,8 @@ import com.dnbn.back.board.model.BoardDetailDto;
 import com.dnbn.back.board.model.BoardSearchCond;
 import com.dnbn.back.comment.model.CommentDetailDto;
 import com.dnbn.back.comment.model.QCommentDetailDto;
+import com.dnbn.back.common.error.ErrorCode;
+import com.dnbn.back.common.error.exception.BoardException;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
@@ -47,6 +49,7 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
 			case ALL  -> whereClause = getMainBoardCriteria(whereClause, cond);  // 동네별 전체 게시글
 			case MY   -> whereClause = getMyBoardCriteria(whereClause, cond);    // 내가 작성한 게시글
 			case LIKE -> whereClause = getLikedBoardCriteria(whereClause, cond); // 내가 좋아요한 게시글
+			default -> throw new BoardException(ErrorCode.TYPE_EMPTY);
 		}
 
 		// 게시글 조회

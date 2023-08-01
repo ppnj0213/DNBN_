@@ -1,11 +1,13 @@
 package com.dnbn.back.board.model;
 
 import com.dnbn.back.board.entity.BoardType;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.Data;
 
 @Data
 public class BoardSearchDto {
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private BoardType type;
 	private Integer page;
 	private Integer size;

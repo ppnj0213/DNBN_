@@ -34,6 +34,7 @@ public enum ErrorCode {
 	CONTENT_EMPTY("BOARD", "내용을 입력하세요.", HttpStatus.BAD_REQUEST),
 	WRITER_EMPTY("BOARD", "작성자 파라미터에 빈 값이 존재합니다.", HttpStatus.BAD_REQUEST),
 	OPEN_YN_EMPTY("BOARD", "공개 게시판 여부가 입력되지 않았습니다.", HttpStatus.BAD_REQUEST),
+	TYPE_EMPTY("BOARD", "게시판 유형은 필수입니다.", HttpStatus.BAD_REQUEST),
 
 	// 댓글
 	COMMENT_NOT_FOUND("COMMENT", "댓글이 존재하지 않습니다.", HttpStatus.NOT_FOUND),

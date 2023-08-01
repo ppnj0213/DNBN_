@@ -2,6 +2,7 @@ package com.dnbn.back.board.entity;
 
 import com.dnbn.back.member.entity.Member;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -22,6 +23,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "likes")
 public class Like {
 	@Id @GeneratedValue
+	@Column(name = "like_id")
 	private Long id;
 
 	@ManyToOne
