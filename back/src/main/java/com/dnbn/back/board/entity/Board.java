@@ -66,32 +66,6 @@ public class Board extends BaseTimeEntity {
 		}
 	}
 
-	public void validateRequiredFields() {
-		if (sido_code == null || sido_code.isEmpty()) {
-            throw new BoardException(ErrorCode.REGION_CODE_EMPTY);
-        }
-
-        if (sigoon_code == null || sigoon_code.isEmpty()) {
-            throw new BoardException(ErrorCode.REGION_CODE_EMPTY);
-        }
-
-        if (dong_code == null || dong_code.isEmpty()) {
-            throw new BoardException(ErrorCode.REGION_CODE_EMPTY);
-        }
-
-        if (content == null || content.isEmpty()) {
-            throw new BoardException(ErrorCode.CONTENT_EMPTY);
-        }
-
-        if (writer == null || writer.isEmpty()) {
-            throw new BoardException(ErrorCode.WRITER_EMPTY);
-        }
-
-		if (openYn == null || openYn.isEmpty()) {
-            throw new BoardException(ErrorCode.OPEN_YN_EMPTY);
-        }
-	}
-
 	public boolean matchMember(Long memberId) {
 		if (member.getId() != memberId) {
 			return false;

@@ -2,6 +2,9 @@ package com.dnbn.back.member.model;
 
 import com.dnbn.back.member.entity.MyRegion;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,12 +18,19 @@ import lombok.NoArgsConstructor;
 public class MyRegionDto {
 
 	private Long id;
+	@NotEmpty
 	private String sido_code;
+	@NotEmpty
 	private String sido_name;
+	@NotEmpty
 	private String sigoon_code;
+	@NotEmpty
 	private String sigoon_name;
+	@NotEmpty
 	private String dong_code;
+	@NotEmpty
 	private String dong_name;
+	@Size(max = 1)
 	private String mainRegionYn;
 
 	public MyRegion toEntity() {

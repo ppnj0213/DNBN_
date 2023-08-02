@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 
 import com.dnbn.back.common.error.ErrorCode;
 
-public class BoardException extends RuntimeException {
+public class BoardException extends CommonException {
 	private final ErrorCode errorCode;
 	private final String message;
 	private final HttpStatus httpStatus;
@@ -13,23 +13,10 @@ public class BoardException extends RuntimeException {
 		this(errorCode, errorCode.getMessage(), errorCode.getHttpStatus());
 	}
 
-	public BoardException(ErrorCode errorCode, String message, HttpStatus status) {
-		super(message);
+	public BoardException(ErrorCode errorCode, String message, HttpStatus httpStatus) {
+		super(errorCode, message, httpStatus);
 		this.errorCode = errorCode;
 		this.message = message;
-		this.httpStatus = status;
-	}
-
-	@Override
-	public String getMessage() {
-		return message;
-	}
-
-	public ErrorCode getErrorCode() {
-		return errorCode;
-	}
-
-	public HttpStatus getHttpStatus() {
-		return httpStatus;
+		this.httpStatus = httpStatus;
 	}
 }

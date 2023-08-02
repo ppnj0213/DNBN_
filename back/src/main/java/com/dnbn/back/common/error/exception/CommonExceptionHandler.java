@@ -1,7 +1,13 @@
 package com.dnbn.back.common.error.exception;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -15,8 +21,8 @@ public class CommonExceptionHandler {
 
 	private static final String LOG_FORMAT = "Class : {}, Code : {}, Message : {}";
 
-	@ExceptionHandler(MemberException.class)
-	protected ResponseEntity<ErrorResponse> handleMemberException(MemberException e) {
+	@ExceptionHandler({MemberException.class, BoardException.class, CommentException.class})
+	protected ResponseEntity<ErrorResponse> handleMemberException(CommonException e) {
 		log.error(
 				LOG_FORMAT,
 				e.getClass().getSimpleName(),
@@ -30,34 +36,25 @@ public class CommonExceptionHandler {
 			.body(new ErrorResponse(e.getMessage(), e.getHttpStatus()));
 	}
 
-	@ExceptionHandler(BoardException.class)
-	protected ResponseEntity<ErrorResponse> handleBoardException(BoardException e) {
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	protected ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
 		log.error(
 				LOG_FORMAT,
 				e.getClass().getSimpleName(),
-				e.getErrorCode(),
-				e.getMessage()
+				e.getStatusCode(),
+				"Spring Validation 실패"
 			);
-		log.error("StackTrace : {}", e.getStackTrace());
+		BindingResult bindingResult = e.getBindingResult();
+		List<String> emptyFields = new ArrayList<>();
+		for (FieldError fieldError : bindingResult.getFieldErrors()) {
+			String errorMsg = fieldError.getField() + " - " + fieldError.getDefaultMessage();
+			log.error(errorMsg);
+			emptyFields.add(errorMsg);
+		}
 
 		return ResponseEntity
-			.status(e.getHttpStatus())
-			.body(new ErrorResponse(e.getMessage(), e.getHttpStatus()));
-	}
-
-	@ExceptionHandler(CommentException.class)
-	protected ResponseEntity<ErrorResponse> handleCommentException(CommentException e) {
-		log.error(
-				LOG_FORMAT,
-				e.getClass().getSimpleName(),
-				e.getErrorCode(),
-				e.getMessage()
-			);
-		log.error("StackTrace : {}", e.getStackTrace());
-
-		return ResponseEntity
-			.status(e.getHttpStatus())
-			.body(new ErrorResponse(e.getMessage(), e.getHttpStatus()));
+			.status(HttpStatus.BAD_REQUEST)
+			.body(new ErrorResponse(emptyFields.toString(), HttpStatus.BAD_REQUEST));
 	}
 
 	@ExceptionHandler(Exception.class)

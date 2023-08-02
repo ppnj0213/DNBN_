@@ -44,8 +44,6 @@ public class BoardService {
 		Member member = memberService.getMember(dtoMemberId == null ? 0 : dtoMemberId);
 		// 3. 게시판 엔티티에 사용자 매핑
 		board.setMember(member);
-		// 4. validation
-		validateBoard(board);
 		// 5. 저장
 		return boardRepository.save(board).getId();
 	}
@@ -72,7 +70,6 @@ public class BoardService {
 		if (!board.matchMember(boardUpdateDto.getMemberId())) {
 			throw new BoardException(ErrorCode.NO_ACCESS_BOARD);
 		}
-		validateBoard(board);
 		// 3. 게시글 update
 		board.editBoard(boardUpdateDto);
 		return board.getId();
@@ -82,11 +79,11 @@ public class BoardService {
 	 * 게시글 삭제
 	 */
 	@Transactional
-	public void deleteBoard(Long boardId) {
+	public void deleteBoard(Long boardId, Long memberId) {
 		// 1. 게시글 조회
 		Board board = getBoard(boardId);
 		// 2. 해당 게시글 등록한 사용자인지 체크
-		if (board.matchMember(board.getMember().getId())) {
+		if (board.matchMember(memberId)) {
 			boardRepository.deleteById(boardId);
 		} else {
 			throw new BoardException(ErrorCode.NO_ACCESS_BOARD);
@@ -117,14 +114,6 @@ public class BoardService {
 		// 4. 전체 좋아요 개수 set
 		likeDto.setTotalCount(likeRepository.getCountByBoardId(boardId));
 		return likeDto;
-	}
-
-	/**
-	 * 게시글 유효성 검사
-	 */
-	private void validateBoard(Board board) {
-		// 1. 필수값 체크
-		board.validateRequiredFields();
 	}
 
 	/**

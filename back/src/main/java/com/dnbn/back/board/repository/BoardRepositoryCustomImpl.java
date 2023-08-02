@@ -124,7 +124,6 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
 		return whereClause.and(sidoCodeEq(cond.getSido_code()))
 			              .and(sigoonCodeEq(cond.getSigoon_code()))
 			              .and(dongCodeEq(cond.getDong_code()))
-			              .and(writerEq(cond.getWriter()))
 			              .and(openYnEq(cond.getOpenYn()));
 	}
 

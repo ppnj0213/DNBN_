@@ -40,8 +40,12 @@ public class CommentService {
 		commentRepository.save(comment);
 	}
 
+	/**
+	 * 댓글 더보기
+	 */
 	public Slice<CommentDetailDto> getCommentListWithSlice(Pageable pageable, Long boardId) {
-		return commentRepository.findCommentListWithSlice(pageable, boardId);
+		Board findBoard = boardService.getBoard(boardId);
+		return commentRepository.findCommentListWithSlice(pageable, findBoard.getId());
 	}
 
 	/**
