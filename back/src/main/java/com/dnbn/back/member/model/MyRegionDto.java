@@ -30,13 +30,13 @@ public class MyRegionDto {
 	private String dong_code;
 	@NotEmpty
 	private String dong_name;
-	@Size(max = 1)
+	@NotEmpty @Size(max = 1)
 	private String mainRegionYn;
 
 	public MyRegion toEntity() {
 		return MyRegion.builder()
 			.id(id)
-			.isMainRegion(mainRegionYn.isEmpty() ? "N" : mainRegionYn.toUpperCase())
+			.mainRegionYn(mainRegionYn)
 			.sido_code(sido_code)
 			.sido_name(sido_name)
 			.sigoon_code(sigoon_code)

@@ -84,7 +84,7 @@ public class TestData {
 		}
 	}
 
-	@Description("게시물 테스트 데이터 생성")
+	@Description("게시글 테스트 데이터 생성")
 	@Component
 	static class InitBoardService {
 		@Autowired
@@ -101,7 +101,6 @@ public class TestData {
 					.sido_code(i < 11 ? "10" : "20")
 					.sigoon_code(i < 11 ? "1010" : "2020")
 					.dong_code(i < 11 ? "101010" : "202020")
-					.writer("주비")
 					.openYn(i < 11 ? "Y" : "N")
 					.build();
 				boardService.createBoard(boardCreateDto);
@@ -109,7 +108,7 @@ public class TestData {
 		}
 	}
 
-	@Description("게시물 테스트 데이터 생성")
+	@Description("댓글 테스트 데이터 생성")
 	@Component
 	static class InitCommentService {
 		@Autowired

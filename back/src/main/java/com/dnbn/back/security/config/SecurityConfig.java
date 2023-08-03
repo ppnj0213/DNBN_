@@ -52,12 +52,12 @@ public class SecurityConfig {
 				.usernameParameter("userId")
 				.passwordParameter("userPw")
 				.loginPage("/api/members/login") // 로그인 요청 url
-				.defaultSuccessUrl("/api/members/login") // 로그인 성공 시 이동할 url
+				.defaultSuccessUrl("/api/members/login")
 				.failureHandler(new LoginFailHandler(objectMapper))
 			)
-			.logout(
-				// Customizer.withDefaults() // "/logout" 으로 인증 해제
-				(logout) -> logout.logoutUrl("/api/logout")
+			.logout((logout) -> logout
+				.logoutUrl("/api/logout") // 로그아웃 요청 url
+				.logoutSuccessUrl("/api/members/logout")
 				.invalidateHttpSession(true) // 세션 제거
 				.permitAll()
 			)

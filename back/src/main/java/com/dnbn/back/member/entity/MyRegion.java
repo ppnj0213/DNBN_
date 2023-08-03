@@ -37,8 +37,8 @@ public class MyRegion {
 	private String sigoon_name;
 	private String dong_code;
 	private String dong_name;
-	@Column(name = "main_region_yn", length = 1)
-	private String isMainRegion;
+	@Column(length = 1)
+	private String mainRegionYn;
 
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -46,7 +46,7 @@ public class MyRegion {
 	private Member member;
 
 	public void toMainRegion() {
-		this.isMainRegion = "Y";
+		this.mainRegionYn = "Y";
 	}
 
 	public void setMember(Member member) {
@@ -54,10 +54,8 @@ public class MyRegion {
 	}
 
 	public void editMyRegion(MyRegion myRegion) {
-		if (hasText(myRegion.isMainRegion)) {
-			isMainRegion = myRegion.isMainRegion.toUpperCase();
-		} else {
-			isMainRegion = "N";
+		if (hasText(myRegion.mainRegionYn)) {
+			mainRegionYn = myRegion.mainRegionYn.toUpperCase();
 		}
 		if (hasText(myRegion.sido_code)) {
 			sido_code = myRegion.sido_code;
@@ -77,31 +75,5 @@ public class MyRegion {
 		if (hasText(myRegion.dong_name))  {
 			dong_name = myRegion.dong_name;
 		}
-	}
-
-	public void validateRequiredFields() {
-		if (sido_code == null || sido_code.isEmpty()) {
-            throw new MemberException(ErrorCode.MY_REGION_NOT_ENOUGH);
-        }
-
-        if (sido_name == null || sido_name.isEmpty()) {
-            throw new MemberException(ErrorCode.MY_REGION_NOT_ENOUGH);
-        }
-
-		if (sigoon_code == null || sigoon_code.isEmpty()) {
-            throw new MemberException(ErrorCode.MY_REGION_NOT_ENOUGH);
-        }
-
-        if (sigoon_name == null || sigoon_name.isEmpty()) {
-            throw new MemberException(ErrorCode.MY_REGION_NOT_ENOUGH);
-        }
-
-		if (dong_code == null || dong_code.isEmpty()) {
-            throw new MemberException(ErrorCode.MY_REGION_NOT_ENOUGH);
-        }
-
-        if (dong_name == null || dong_name.isEmpty()) {
-            throw new MemberException(ErrorCode.MY_REGION_NOT_ENOUGH);
-        }
 	}
 }

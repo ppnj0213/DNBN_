@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.dnbn.back.common.error.ErrorCode;
+import com.dnbn.back.common.error.exception.BoardException;
 import com.dnbn.back.common.error.exception.MemberException;
 import com.dnbn.back.member.entity.Member;
 import com.dnbn.back.member.entity.MyRegion;
@@ -37,38 +38,31 @@ public class MemberService {
 	 */
 	@Transactional
 	public Long join(MemberCreateDto memberCreateDto) {
-		// 1. Member
-		// 1.1. 비밀번호 암호화
+		/***************  Member ***************/
+		// 아이디 중복 체크
+		if (isUserIdDuplicated(memberCreateDto.getUserId())) {
+			throw new BoardException(ErrorCode.ID_DUPLICATED);
+		}
+		// 닉네임 중복 체크
+		if (isNicknameDuplicated(memberCreateDto.getNickname())) {
+			throw new BoardException(ErrorCode.NICKNAME_DUPLICATED);
+		}
+		// 비밀번호 암호화
 		String rawPassword = memberCreateDto.getUserPw();
-		String encPassword = !rawPassword.isEmpty() ? bCryptPasswordEncoder.encode(rawPassword) : null; // 공백도 암호화 되는 문제 때문에 validation 체크를 위해 null 처리
+		String encPassword = bCryptPasswordEncoder.encode(rawPassword);
 		memberCreateDto.setUserPw(encPassword);
-		// 1.2. Member 엔티티 변환
+		// 저장
 		Member member = memberCreateDto.toEntity();
-		// 1.3. Member 유효성 검사
-		member.validateRequiredFields();
-		isUserIdDuplicated(member.getUserId());
-		isNicknameDuplicated(member.getNickname());
-		// 1.4. Member 저장
 		Member savedMember = memberRepository.save(member);
 
-		// 2. MyRegion
+		/***************  MyRegion ***************/
 		List<MyRegionDto> myRegionDtos = memberCreateDto.getMyRegions();
-		// 2.1. 대표 동네 중복 체크 용 Set 생성
-		Set<String> regionSet = new HashSet<>();
+		checkMainRegion(myRegionDtos);
 		for (MyRegionDto myRegionDto : myRegionDtos) {
-			// 2.2. MyRegion 엔티티 변환
+			// 저장
 			MyRegion myRegion = myRegionDto.toEntity();
-			// 2.3. validation
-			myRegion.validateRequiredFields();
-			// 2.4. Member 주입
 			myRegion.setMember(savedMember);
-			// 2.5. MyRegion 저장
 			myRegionRepository.save(myRegion);
-			regionSet.add(myRegionDto.getMainRegionYn());
-		}
-		// 2.6. 대표 동네가 두 개, 또는 하나도 없는 경우 예외 발생
-		if (regionSet.size() == 1) {
-			throw new MemberException(ErrorCode.MAIN_REGION_UNACCEPTABLE);
 		}
 		return savedMember.getId();
 	}
@@ -86,48 +80,58 @@ public class MemberService {
 	 */
 	@Transactional
 	public Long updateMember(Long memberId, MemberUpdateDto memberUpdateDto) {
-		// 0. Member, MyRegion fetch join
+		// Member, MyRegion fetch join
 		Member member = memberRepository.findByIdWithMyRegion(memberId)
 			.orElseThrow(() -> new MemberException(ErrorCode.MEMBER_NOT_FOUND));
-		// 1. Member
-		// 1.1. 비밀번호 변경된 경우 암호화
+		/***************  Member ***************/
+		// 비밀번호 변경된 경우 암호화
 		if (hasText(memberUpdateDto.getUserPw())) {
 			String rawPassword = memberUpdateDto.getUserPw();
 			String encPassword = bCryptPasswordEncoder.encode(rawPassword);
 			memberUpdateDto.setUserPw(encPassword);
 		}
-		// 1.2. Member 수정
+		// Member 수정
 		member.editMember(memberUpdateDto);
 
-		// 2. MyRegion
-		// 2.1. MyRegion 변경된 경우 PK 값으로 비교 후 update
-		member.getMyRegions().forEach(myRegion -> {
-			memberUpdateDto.getMyRegions()
-				.stream()
-				.filter(myRegionDto -> myRegion.getId().equals(myRegionDto.getId()))
-				.forEachOrdered(myRegionDto -> myRegion.editMyRegion(myRegionDto.toEntity())); // 동네정보 update
-		});
+		/***************  MyRegion ***************/
+		checkMainRegion(memberUpdateDto.getMyRegions());
+		// MyRegion 변경된 경우 PK 값으로 비교 후 update
+		for (MyRegion myRegion : member.getMyRegions()) {
+			for (MyRegionDto myRegionDto : memberUpdateDto.getMyRegions()) {
+				if (myRegion.getId().equals(myRegionDto.getId())) {
+					myRegion.editMyRegion(myRegionDto.toEntity());
+				}
+			}
+		}
 		return member.getId();
+	}
+
+	/**
+	 * 메인 지역 미설정, 또는 중복 설정된 경우 예외 발생
+	 */
+	private void checkMainRegion(List<MyRegionDto> myRegionDtos) {
+		Set<String> regionSet = new HashSet<>();
+		for (MyRegionDto myRegionDto : myRegionDtos) {
+			regionSet.add(myRegionDto.getMainRegionYn());
+		}
+		// 대표 동네가 두 개, 또는 하나도 없는 경우 예외 발생
+		if (regionSet.size() == 1) {
+			throw new MemberException(ErrorCode.MAIN_REGION_UNACCEPTABLE);
+		}
 	}
 
 	/**
 	 * 아이디 중복체크
 	 */
 	public boolean isUserIdDuplicated(String userId) {
-		if (memberRepository.existsByUserId(userId)) {
-			throw new MemberException(ErrorCode.ID_DUPLICATED);
-		}
-		return false;
+		return memberRepository.existsByUserId(userId);
 	}
 
 	/**
 	 * 닉네임 중복체크
 	 */
 	public boolean isNicknameDuplicated(String nickname) {
-		if (memberRepository.existsByNickname(nickname)) {
-			throw new MemberException(ErrorCode.NICKNAME_DUPLICATED);
-		}
-		return false;
+		return memberRepository.existsByNickname(nickname);
 	}
 
 	/**

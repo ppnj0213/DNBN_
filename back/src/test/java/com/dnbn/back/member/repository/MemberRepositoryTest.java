@@ -33,7 +33,7 @@ class MemberRepositoryTest {
 	public void createMemberAndMyRegion(){
 		List<MyRegion> myRegions = new ArrayList<>();
 		MyRegion region1 = MyRegion.builder()
-			.isMainRegion("Y")
+			.mainRegionYn("Y")
 			.sido_code("10")
 			.sido_name("서울시")
 			.sigoon_code("1010")
@@ -43,7 +43,7 @@ class MemberRepositoryTest {
 			.build();
 
 		MyRegion region2 = MyRegion.builder()
-			.isMainRegion("Y")
+			.mainRegionYn("Y")
 			.sido_code("20")
 			.sido_name("부천시")
 			.sigoon_code("2020")

@@ -15,6 +15,7 @@ import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.dnbn.back.board.entity.Board;
+import com.dnbn.back.board.entity.BoardType;
 import com.dnbn.back.board.model.BoardDetailDto;
 import com.dnbn.back.board.model.BoardSearchCond;
 
@@ -44,21 +45,21 @@ class BoardRepositoryTest {
 	@Test
 	public void getBoardListWithSliceTest() throws Exception {
 	    //given
-		BoardSearchCond cond = new BoardSearchCond("10", "1010", "101010", "junyeobk", "Y");
+		BoardSearchCond cond = new BoardSearchCond("10", "1010", "101010", "junyeobk", 1L, "Y");
 
 		PageRequest firstRequest = PageRequest.of(0, 5);
-		Slice<BoardDetailDto> firstResult = boardRepository.getBoardListWithSlice(firstRequest, cond);
+		Slice<BoardDetailDto> firstResult = boardRepository.getBoardListWithSlice(BoardType.ALL, firstRequest, cond);
 		for (BoardDetailDto boardDetailDto : firstResult) {
 			System.out.println("content = " + boardDetailDto.getContent());
 		}
 
 		//when
 		PageRequest nextRequest = PageRequest.of(firstResult.nextPageable().getPageNumber(), 5);
-		Slice<BoardDetailDto> nextResult = boardRepository.getBoardListWithSlice(nextRequest, cond);
+		Slice<BoardDetailDto> nextResult = boardRepository.getBoardListWithSlice(BoardType.ALL, nextRequest, cond);
 		boolean hasNext = firstResult.hasNext();
 		while (hasNext) {
 			nextRequest = PageRequest.of(nextResult.nextPageable().getPageNumber(), 5);
-			nextResult = boardRepository.getBoardListWithSlice(nextRequest, cond);
+			nextResult = boardRepository.getBoardListWithSlice(BoardType.ALL, nextRequest, cond);
 			for (BoardDetailDto boardDetailDto : nextResult) {
 				System.out.println("content = " + boardDetailDto.getContent());
 			}

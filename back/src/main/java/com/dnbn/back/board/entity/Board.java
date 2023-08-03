@@ -5,6 +5,7 @@ import static org.springframework.util.StringUtils.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.dnbn.back.board.model.BoardUpdateDto;
@@ -45,6 +46,8 @@ public class Board extends BaseTimeEntity {
 	private String sigoon_code;
 	private String dong_code;
 	private String content;
+	@CreatedBy
+	@Column(updatable = false)
 	private String writer;
 	@Column(length = 1)
 	private String openYn;

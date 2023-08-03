@@ -29,7 +29,7 @@ class BoardServiceTest {
 	@Test
 	public void test_delete_board() throws Exception {
 	    //given
-		boardService.deleteBoard(1L);
+		boardService.deleteBoard(1L, 1L);
 
 		//when
 		List<Board> findBoards = boardRepository.findAll();

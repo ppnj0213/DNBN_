@@ -30,10 +30,10 @@ public class BoardCreateDto {
 	private String dong_code;
 	@NotEmpty
 	private String content;
-	@NotEmpty
-	private String writer;
 	@NotEmpty @Size(max = 1)
 	private String openYn;
+
+	private String writer;
 
 	public Board toEntity() {
 		return Board.builder()
@@ -41,7 +41,6 @@ public class BoardCreateDto {
 			.sigoon_code(sigoon_code)
 			.dong_code(dong_code)
 			.content(content)
-			.writer(writer)
 			.openYn(openYn.toUpperCase())
 			.build();
 	}

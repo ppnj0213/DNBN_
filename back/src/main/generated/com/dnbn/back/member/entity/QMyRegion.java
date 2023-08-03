@@ -28,7 +28,7 @@ public class QMyRegion extends EntityPathBase<MyRegion> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final StringPath isMainRegion = createString("isMainRegion");
+    public final StringPath mainRegionYn = createString("mainRegionYn");
 
     public final QMember member;
 
