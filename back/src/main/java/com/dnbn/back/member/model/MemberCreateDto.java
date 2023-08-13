@@ -3,12 +3,9 @@ package com.dnbn.back.member.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.dnbn.back.member.entity.Member;
-import com.dnbn.back.member.entity.MyRegion;
 import com.dnbn.back.member.entity.Role;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -30,14 +27,6 @@ public class MemberCreateDto {
 	private String nickname;
 	private Role role;
 	@NotEmpty @Valid
-	private List<MyRegionDto> myRegions = new ArrayList<>();
+	private List<RegionDto> regions = new ArrayList<>();
 
-	public Member toEntity() {
-		return Member.builder()
-			.userId(userId)
-			.userPw(userPw)
-			.nickname(nickname)
-			.role(role)
-			.build();
-	}
 }

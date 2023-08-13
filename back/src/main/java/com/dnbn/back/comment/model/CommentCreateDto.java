@@ -22,9 +22,4 @@ public class CommentCreateDto {
 	@NotNull
 	private Long memberId;
 
-	public Comment toEntity() {
-		return Comment.builder()
-			.content(content)
-			.build();
-	}
 }

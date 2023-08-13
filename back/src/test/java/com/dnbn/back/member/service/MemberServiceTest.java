@@ -15,7 +15,7 @@ import com.dnbn.back.member.entity.Member;
 import com.dnbn.back.member.model.MemberCreateDto;
 import com.dnbn.back.member.model.MemberDetailDto;
 import com.dnbn.back.member.model.MemberUpdateDto;
-import com.dnbn.back.member.model.MyRegionDto;
+import com.dnbn.back.member.model.RegionDto;
 import com.dnbn.back.member.repository.MemberRepository;
 
 import jakarta.persistence.EntityManager;
@@ -45,8 +45,8 @@ class MemberServiceTest {
 
 		//then
 		assertThat(findMember.getNickname()).isEqualTo("주비");
-		assertThat(findMember.getMyRegions().size()).isEqualTo(2);
-		assertThat(findMember.getMyRegions().get(0).getDong_name()).isEqualTo("신림동");
+		assertThat(findMember.getRegions().size()).isEqualTo(2);
+		assertThat(findMember.getRegions().get(0).getDong_name()).isEqualTo("신림동");
 	}
 	
 	@DisplayName("회원정보 조회 서비스")
@@ -61,8 +61,8 @@ class MemberServiceTest {
 
 		//then
 		assertThat(memberDetailDto.getNickname()).isEqualTo("주비");
-		assertThat(memberDetailDto.getMyRegions().size()).isEqualTo(2);
-		assertThat(memberDetailDto.getMyRegions().get(0).getDong_name()).isEqualTo("신림동");
+		assertThat(memberDetailDto.getRegions().size()).isEqualTo(2);
+		assertThat(memberDetailDto.getRegions().get(0).getDong_name()).isEqualTo("신림동");
 	}
 
 	@DisplayName("회원정보 수정 서비스")
@@ -84,7 +84,7 @@ class MemberServiceTest {
 
 		//then
 		assertThat(findMember.getNickname()).isEqualTo("주비비");
-		assertThat(findMember.getMyRegions().get(0).getDong_name()).isEqualTo("화곡동");
+		assertThat(findMember.getRegions().get(0).getDong_name()).isEqualTo("화곡동");
 	}
 
 	private Long getMemberIdAfterjoin() {
@@ -93,8 +93,8 @@ class MemberServiceTest {
 	}
 
 	private MemberUpdateDto getMemeberUpdateDto() {
-		List<MyRegionDto> myRegions = new ArrayList<>();
-		MyRegionDto region1 = MyRegionDto.builder()
+		List<RegionDto> myRegions = new ArrayList<>();
+		RegionDto region1 = RegionDto.builder()
 			.id(1L)
 			.mainRegionYn("Y")
 			.sido_code("10")
@@ -105,7 +105,7 @@ class MemberServiceTest {
 			.dong_name("화곡동")
 			.build();
 
-		MyRegionDto region2 = MyRegionDto.builder()
+		RegionDto region2 = RegionDto.builder()
 			.id(2L)
 			.mainRegionYn("N")
 			.sido_code("20")
@@ -122,13 +122,13 @@ class MemberServiceTest {
 		return MemberUpdateDto.builder()
 			.nickname("주비비")
 			.userPw("12345")
-			.myRegions(myRegions)
+			.regions(myRegions)
 			.build();
 	}
 
 	private MemberCreateDto getMemberCreateDto() {
-		List<MyRegionDto> myRegions = new ArrayList<>();
-		MyRegionDto region1 = MyRegionDto.builder()
+		List<RegionDto> myRegions = new ArrayList<>();
+		RegionDto region1 = RegionDto.builder()
 			.mainRegionYn("Y")
 			.sido_code("10")
 			.sido_name("서울시")
@@ -138,7 +138,7 @@ class MemberServiceTest {
 			.dong_name("신림동")
 			.build();
 
-		MyRegionDto region2 = MyRegionDto.builder()
+		RegionDto region2 = RegionDto.builder()
 			.mainRegionYn("Y")
 			.sido_code("20")
 			.sido_name("부천시")
@@ -155,7 +155,7 @@ class MemberServiceTest {
 			.userId("junyeobk")
 			.userPw("1234")
 			.nickname("주비")
-			.myRegions(myRegions)
+			.regions(myRegions)
 			.build();
 	}
 

@@ -4,9 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,9 +13,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.dnbn.back.member.entity.Member;
-import com.dnbn.back.member.entity.MyRegion;
+import com.dnbn.back.member.entity.Region;
 import com.dnbn.back.member.entity.Role;
-import com.dnbn.back.member.model.MemberCreateDto;
 
 import jakarta.persistence.EntityManager;
 
@@ -26,13 +23,14 @@ import jakarta.persistence.EntityManager;
 class MemberRepositoryTest {
 
 	@Autowired MemberRepository memberRepository;
-	@Autowired MyRegionRepository myRegionRepository;
+	@Autowired
+	RegionRepository regionRepository;
 	@Autowired EntityManager em;
 
 	@BeforeEach
 	public void createMemberAndMyRegion(){
-		List<MyRegion> myRegions = new ArrayList<>();
-		MyRegion region1 = MyRegion.builder()
+		List<Region> regions = new ArrayList<>();
+		Region region1 = Region.builder()
 			.mainRegionYn("Y")
 			.sido_code("10")
 			.sido_name("서울시")
@@ -42,7 +40,7 @@ class MemberRepositoryTest {
 			.dong_name("신림동")
 			.build();
 
-		MyRegion region2 = MyRegion.builder()
+		Region region2 = Region.builder()
 			.mainRegionYn("Y")
 			.sido_code("20")
 			.sido_name("부천시")
@@ -52,19 +50,19 @@ class MemberRepositoryTest {
 			.dong_name("상동")
 			.build();
 
-		myRegions.add(region1);
-		myRegions.add(region2);
+		regions.add(region1);
+		regions.add(region2);
 
 		Member member = Member.builder()
 			.userId("junyeobk")
 			.userPw("1234")
 			.nickname("주비")
 			.role(Role.ROLE_USER)
-			.myRegions(myRegions)
+			.regions(regions)
 			.build();
 
 		memberRepository.save(member);
-		myRegionRepository.saveAll(myRegions);
+		regionRepository.saveAll(regions);
 	}
 
 	@DisplayName("유저정보 조회")
@@ -72,12 +70,12 @@ class MemberRepositoryTest {
 	public void findUserTest() throws Exception {
 	    //given
 		Member member = memberRepository.findByUserId("junyeobk").get();
-		List<MyRegion> myRegions = member.getMyRegions();
+		List<Region> regions = member.getRegions();
 
 		//then
 		assertThat(member.getUserId()).isEqualTo("junyeobk");
-		assertThat(myRegions.size()).isEqualTo(2);
-		assertThat(myRegions.get(0).getDong_name()).isEqualTo("신림동");
+		assertThat(regions.size()).isEqualTo(2);
+		assertThat(regions.get(0).getDong_name()).isEqualTo("신림동");
 	}
 
 	@DisplayName("아이디 중복체크")

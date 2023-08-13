@@ -10,6 +10,7 @@ import com.dnbn.back.board.service.BoardService;
 import com.dnbn.back.comment.entity.Comment;
 import com.dnbn.back.comment.model.CommentCreateDto;
 import com.dnbn.back.comment.model.CommentDetailDto;
+import com.dnbn.back.comment.model.CommentDtoAssembler;
 import com.dnbn.back.comment.repository.CommentRepository;
 import com.dnbn.back.common.error.exception.CommentException;
 import com.dnbn.back.common.error.ErrorCode;
@@ -34,7 +35,7 @@ public class CommentService {
 	public void createComment(CommentCreateDto commentCreateDto) {
 		Board board = boardService.getBoard(commentCreateDto.getBoardId());
 		Member member = memberService.getMember(commentCreateDto.getMemberId());
-		Comment comment = commentCreateDto.toEntity();
+		Comment comment = CommentDtoAssembler.toCommentFromCreateDto(commentCreateDto);
 		comment.setBoard(board);
 		comment.setMember(member);
 		commentRepository.save(comment);

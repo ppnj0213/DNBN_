@@ -3,9 +3,6 @@ package com.dnbn.back.member.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.dnbn.back.member.entity.MyRegion;
-import com.dnbn.back.member.entity.Role;
-
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AccessLevel;
@@ -22,5 +19,5 @@ public class MemberUpdateDto {
 	private String userPw;
 	private String nickname;
 	@NotEmpty @Valid
-	private List<MyRegionDto> myRegions = new ArrayList<>();
+	private List<RegionDto> regions = new ArrayList<>();
 }

@@ -1,8 +1,5 @@
 package com.dnbn.back.member.model;
 
-import com.dnbn.back.member.entity.MyRegion;
-
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
@@ -15,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
-public class MyRegionDto {
+public class RegionDto {
 
 	private Long id;
 	@NotEmpty
@@ -32,18 +29,5 @@ public class MyRegionDto {
 	private String dong_name;
 	@NotEmpty @Size(max = 1)
 	private String mainRegionYn;
-
-	public MyRegion toEntity() {
-		return MyRegion.builder()
-			.id(id)
-			.mainRegionYn(mainRegionYn)
-			.sido_code(sido_code)
-			.sido_name(sido_name)
-			.sigoon_code(sigoon_code)
-			.sigoon_name(sigoon_name)
-			.dong_code(dong_code)
-			.dong_name(dong_name)
-			.build();
-	}
 
 }

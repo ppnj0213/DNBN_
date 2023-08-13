@@ -9,8 +9,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.dnbn.back.board.entity.Board;
 import com.dnbn.back.common.entity.BaseTimeEntity;
-import com.dnbn.back.common.error.ErrorCode;
-import com.dnbn.back.common.error.exception.MemberException;
 import com.dnbn.back.member.model.MemberUpdateDto;
 
 import jakarta.persistence.CascadeType;
@@ -47,7 +45,7 @@ public class Member extends BaseTimeEntity {
 	@Enumerated(EnumType.STRING)
 	private Role role;
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<MyRegion> myRegions = new ArrayList<>();
+	private List<Region> regions = new ArrayList<>();
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Board> boards = new ArrayList<>();
 

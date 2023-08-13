@@ -10,6 +10,7 @@ import com.dnbn.back.board.entity.BoardType;
 import com.dnbn.back.board.entity.Like;
 import com.dnbn.back.board.model.BoardCreateDto;
 import com.dnbn.back.board.model.BoardDetailDto;
+import com.dnbn.back.board.model.BoardDtoAssembler;
 import com.dnbn.back.board.model.BoardSearchCond;
 import com.dnbn.back.board.model.BoardSearchDto;
 import com.dnbn.back.board.model.BoardUpdateDto;
@@ -38,7 +39,7 @@ public class BoardService {
 	@Transactional
 	public Long createBoard(BoardCreateDto boardCreateDto) {
 		// 1. Board 엔티티 변환
-		Board board = boardCreateDto.toEntity();
+		Board board = BoardDtoAssembler.toBoardFromCreateDto(boardCreateDto);
 		// 2. 사용자 조회
 		Long dtoMemberId = boardCreateDto.getMemberId();
 		Member member = memberService.getMember(dtoMemberId == null ? 0 : dtoMemberId);

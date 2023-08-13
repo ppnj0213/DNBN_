@@ -14,13 +14,14 @@ import com.dnbn.back.common.error.ErrorCode;
 import com.dnbn.back.common.error.exception.BoardException;
 import com.dnbn.back.common.error.exception.MemberException;
 import com.dnbn.back.member.entity.Member;
-import com.dnbn.back.member.entity.MyRegion;
+import com.dnbn.back.member.entity.Region;
 import com.dnbn.back.member.model.MemberCreateDto;
 import com.dnbn.back.member.model.MemberDetailDto;
+import com.dnbn.back.member.model.MemberDtoAssembler;
 import com.dnbn.back.member.model.MemberUpdateDto;
-import com.dnbn.back.member.model.MyRegionDto;
+import com.dnbn.back.member.model.RegionDto;
 import com.dnbn.back.member.repository.MemberRepository;
-import com.dnbn.back.member.repository.MyRegionRepository;
+import com.dnbn.back.member.repository.RegionRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,7 +31,7 @@ import lombok.RequiredArgsConstructor;
 public class MemberService {
 
 	private final MemberRepository memberRepository;
-	private final MyRegionRepository myRegionRepository;
+	private final RegionRepository regionRepository;
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	/**
@@ -52,17 +53,17 @@ public class MemberService {
 		String encPassword = bCryptPasswordEncoder.encode(rawPassword);
 		memberCreateDto.setUserPw(encPassword);
 		// 저장
-		Member member = memberCreateDto.toEntity();
+		Member member = MemberDtoAssembler.toMemberFromCreateDto(memberCreateDto);
 		Member savedMember = memberRepository.save(member);
 
-		/***************  MyRegion ***************/
-		List<MyRegionDto> myRegionDtos = memberCreateDto.getMyRegions();
-		checkMainRegion(myRegionDtos);
-		for (MyRegionDto myRegionDto : myRegionDtos) {
+		/***************  Region ***************/
+		List<RegionDto> regionDtos = memberCreateDto.getRegions();
+		checkMainRegion(regionDtos);
+		for (RegionDto regionDto : regionDtos) {
 			// 저장
-			MyRegion myRegion = myRegionDto.toEntity();
-			myRegion.setMember(savedMember);
-			myRegionRepository.save(myRegion);
+			Region region = MemberDtoAssembler.toMyRegionFromCreateDto(regionDto);
+			region.setMember(savedMember);
+			regionRepository.save(region);
 		}
 		return savedMember.getId();
 	}
@@ -72,7 +73,7 @@ public class MemberService {
 	 */
 	public MemberDetailDto getMemberDetail(Long memberId) {
 		Member member = getMember(memberId);
-		return MemberDetailDto.toMemberDto(member);
+		return MemberDtoAssembler.toMemberDetailDto(member);
 	}
 
 	/**
@@ -93,13 +94,13 @@ public class MemberService {
 		// Member 수정
 		member.editMember(memberUpdateDto);
 
-		/***************  MyRegion ***************/
-		checkMainRegion(memberUpdateDto.getMyRegions());
+		/***************  Region ***************/
+		checkMainRegion(memberUpdateDto.getRegions());
 		// MyRegion 변경된 경우 PK 값으로 비교 후 update
-		for (MyRegion myRegion : member.getMyRegions()) {
-			for (MyRegionDto myRegionDto : memberUpdateDto.getMyRegions()) {
-				if (myRegion.getId().equals(myRegionDto.getId())) {
-					myRegion.editMyRegion(myRegionDto.toEntity());
+		for (Region region : member.getRegions()) {
+			for (RegionDto regionDto : memberUpdateDto.getRegions()) {
+				if (region.getId().equals(regionDto.getId())) {
+					region.editMyRegion(MemberDtoAssembler.toMyRegionFromCreateDto(regionDto));
 				}
 			}
 		}
@@ -109,10 +110,10 @@ public class MemberService {
 	/**
 	 * 메인 지역 미설정, 또는 중복 설정된 경우 예외 발생
 	 */
-	private void checkMainRegion(List<MyRegionDto> myRegionDtos) {
+	private void checkMainRegion(List<RegionDto> regionDtos) {
 		Set<String> regionSet = new HashSet<>();
-		for (MyRegionDto myRegionDto : myRegionDtos) {
-			regionSet.add(myRegionDto.getMainRegionYn());
+		for (RegionDto regionDto : regionDtos) {
+			regionSet.add(regionDto.getMainRegionYn());
 		}
 		// 대표 동네가 두 개, 또는 하나도 없는 경우 예외 발생
 		if (regionSet.size() == 1) {

@@ -35,13 +35,4 @@ public class BoardCreateDto {
 
 	private String writer;
 
-	public Board toEntity() {
-		return Board.builder()
-			.sido_code(sido_code)
-			.sigoon_code(sigoon_code)
-			.dong_code(dong_code)
-			.content(content)
-			.openYn(openYn.toUpperCase())
-			.build();
-	}
 }

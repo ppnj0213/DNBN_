@@ -17,7 +17,7 @@ import com.dnbn.back.comment.model.CommentCreateDto;
 import com.dnbn.back.comment.service.CommentService;
 import com.dnbn.back.member.entity.Role;
 import com.dnbn.back.member.model.MemberCreateDto;
-import com.dnbn.back.member.model.MyRegionDto;
+import com.dnbn.back.member.model.RegionDto;
 import com.dnbn.back.member.service.MemberService;
 
 import jakarta.annotation.PostConstruct;
@@ -47,8 +47,8 @@ public class TestData {
 
 		@Transactional
 		public void init() {
-			List<MyRegionDto> myRegions = new ArrayList<>();
-			MyRegionDto region1 = MyRegionDto.builder()
+			List<RegionDto> regions = new ArrayList<>();
+			RegionDto region1 = RegionDto.builder()
 				.id(1L)
 				.mainRegionYn("Y")
 				.sido_code("10")
@@ -59,7 +59,7 @@ public class TestData {
 				.dong_name("화곡동")
 				.build();
 
-			MyRegionDto region2 = MyRegionDto.builder()
+			RegionDto region2 = RegionDto.builder()
 				.id(2L)
 				.mainRegionYn("N")
 				.sido_code("20")
@@ -70,15 +70,15 @@ public class TestData {
 				.dong_name("상동")
 				.build();
 
-			myRegions.add(region1);
-			myRegions.add(region2);
+			regions.add(region1);
+			regions.add(region2);
 
 			MemberCreateDto memberCreateDto = MemberCreateDto.builder()
 				.userId("junyeobk")
 				.userPw("1234")
 				.nickname("주비")
 				.role(Role.ROLE_USER)
-				.myRegions(myRegions)
+				.regions(regions)
 				.build();
 			memberService.join(memberCreateDto);
 		}
